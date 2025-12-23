@@ -1,0 +1,99 @@
+import { createRouter, createWebHistory } from 'vue-router'
+
+const routes = [
+  {
+    path: '/',
+    redirect: '/login'
+  },
+  // 用户端路由
+  {
+    path: '/login',
+    name: 'UserLogin',
+    component: () => import('@/views/user/Login.vue'),
+    meta: { title: '用户登录', requiresAuth: false }
+  },
+  {
+    path: '/register',
+    name: 'UserRegister',
+    component: () => import('@/views/user/Register.vue'),
+    meta: { title: '用户注册', requiresAuth: false }
+  },
+  {
+    path: '/home',
+    name: 'UserHome',
+    component: () => import('@/views/user/Home.vue'),
+    meta: { title: '首页', requiresAuth: true, role: 0 }
+  },
+  // 管理员端路由
+  {
+    path: '/admin/login',
+    name: 'AdminLogin',
+    component: () => import('@/views/admin/Login.vue'),
+    meta: { title: '管理员登录', requiresAuth: false }
+  },
+  {
+    path: '/admin/home',
+    name: 'AdminHome',
+    component: () => import('@/views/admin/Home.vue'),
+    meta: { title: '管理后台', requiresAuth: true, role: 1 }
+  },
+  // 404 页面
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/views/NotFound.vue'),
+    meta: { title: '页面不存在' }
+  }
+]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+})
+
+// 路由守卫
+router.beforeEach((to, from, next) => {
+  // 设置页面标题
+  document.title = to.meta.title ? `${to.meta.title} - 购书推荐系统` : '购书推荐系统'
+  
+  const token = localStorage.getItem('token')
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
+  
+  // 不需要登录的页面
+  if (!to.meta.requiresAuth) {
+    // 如果已登录，跳转到对应首页
+    if (token && (to.path === '/login' || to.path === '/register')) {
+      next(userInfo.role === 1 ? '/admin/home' : '/home')
+      return
+    }
+    if (token && to.path === '/admin/login') {
+      next(userInfo.role === 1 ? '/admin/home' : '/home')
+      return
+    }
+    next()
+    return
+  }
+  
+  // 需要登录的页面
+  if (!token) {
+    // 未登录，跳转到登录页
+    if (to.path.startsWith('/admin')) {
+      next('/admin/login')
+    } else {
+      next('/login')
+    }
+    return
+  }
+  
+  // 验证角色权限
+  if (to.meta.role !== undefined && userInfo.role !== to.meta.role) {
+    // 角色不匹配，跳转到对应首页
+    next(userInfo.role === 1 ? '/admin/home' : '/home')
+    return
+  }
+  
+  next()
+})
+
+export default router
+
