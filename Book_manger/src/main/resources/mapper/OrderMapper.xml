@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookmanager.mapper.OrderMapper">
+    
+    <!-- 分页查询用户订单 -->
+    <select id="selectOrderPage" resultType="com.bookmanager.entity.Order">
+        SELECT * FROM `order`
+        <where>
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+    
+    <!-- 管理员分页查询所有订单 -->
+    <select id="selectAllOrderPage" resultType="com.bookmanager.entity.Order">
+        SELECT o.*, u.username
+        FROM `order` o
+        LEFT JOIN user u ON o.user_id = u.id
+        <where>
+            <if test="status != null">
+                AND o.status = #{status}
+            </if>
+            <if test="orderNo != null and orderNo != ''">
+                AND o.order_no LIKE CONCAT('%', #{orderNo}, '%')
+            </if>
+        </where>
+        ORDER BY o.create_time DESC
+    </select>
+    
+    <!-- 根据ID查询订单详情 -->
+    <select id="selectOrderById" resultType="com.bookmanager.entity.Order">
+        SELECT o.*, u.username
+        FROM `order` o
+        LEFT JOIN user u ON o.user_id = u.id
+        WHERE o.id = #{id}
+    </select>
+</mapper>
+

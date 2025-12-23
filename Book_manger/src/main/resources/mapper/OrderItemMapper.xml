@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookmanager.mapper.OrderItemMapper">
+    
+    <!-- 根据订单ID查询订单详情列表 -->
+    <select id="selectByOrderId" resultType="com.bookmanager.entity.OrderItem">
+        SELECT oi.*, b.cover_image as book_cover
+        FROM order_item oi
+        LEFT JOIN book b ON oi.book_id = b.id
+        WHERE oi.order_id = #{orderId}
+    </select>
+</mapper>
+

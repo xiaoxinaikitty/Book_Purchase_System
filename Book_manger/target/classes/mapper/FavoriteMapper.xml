@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookmanager.mapper.FavoriteMapper">
+    
+    <!-- 分页查询用户收藏 -->
+    <select id="selectFavoritePage" resultMap="favoriteResultMap">
+        SELECT f.*, b.id as bid, b.title, b.author, b.price, b.cover_image, b.rating
+        FROM favorite f
+        LEFT JOIN book b ON f.book_id = b.id
+        WHERE f.user_id = #{userId}
+        ORDER BY f.create_time DESC
+    </select>
+    
+    <resultMap id="favoriteResultMap" type="com.bookmanager.entity.Favorite">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="bookId" column="book_id"/>
+        <result property="createTime" column="create_time"/>
+        <association property="book" javaType="com.bookmanager.entity.Book">
+            <id property="id" column="bid"/>
+            <result property="title" column="title"/>
+            <result property="author" column="author"/>
+            <result property="price" column="price"/>
+            <result property="coverImage" column="cover_image"/>
+            <result property="rating" column="rating"/>
+        </association>
+    </resultMap>
+</mapper>
+

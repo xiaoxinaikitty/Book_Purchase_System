@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookmanager.mapper.ReviewMapper">
+    
+    <!-- 分页查询图书评价 -->
+    <select id="selectReviewPage" resultType="com.bookmanager.entity.Review">
+        SELECT r.*, u.nickname, u.avatar
+        FROM review r
+        LEFT JOIN user u ON r.user_id = u.id
+        WHERE r.book_id = #{bookId}
+        ORDER BY r.create_time DESC
+    </select>
+</mapper>
+

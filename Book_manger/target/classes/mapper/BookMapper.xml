@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookmanager.mapper.BookMapper">
+    
+    <!-- 分页查询图书 -->
+    <select id="selectBookPage" resultType="com.bookmanager.entity.Book">
+        SELECT b.*, c.name as category_name
+        FROM book b
+        LEFT JOIN category c ON b.category_id = c.id
+        <where>
+            <if test="categoryId != null">
+                AND b.category_id = #{categoryId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (b.title LIKE CONCAT('%', #{keyword}, '%') 
+                     OR b.author LIKE CONCAT('%', #{keyword}, '%')
+                     OR b.publisher LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY b.create_time DESC
+    </select>
+    
+    <!-- 根据ID查询图书详情 -->
+    <select id="selectBookById" resultType="com.bookmanager.entity.Book">
+        SELECT b.*, c.name as category_name
+        FROM book b
+        LEFT JOIN category c ON b.category_id = c.id
+        WHERE b.id = #{id}
+    </select>
+</mapper>
+

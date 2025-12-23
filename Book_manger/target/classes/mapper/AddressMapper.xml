@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookmanager.mapper.AddressMapper">
+    
+    <!-- 查询用户的收货地址列表 -->
+    <select id="selectByUserId" resultType="com.bookmanager.entity.Address">
+        SELECT * FROM address WHERE user_id = #{userId} ORDER BY is_default DESC, create_time DESC
+    </select>
+    
+    <!-- 查询用户的默认地址 -->
+    <select id="selectDefaultAddress" resultType="com.bookmanager.entity.Address">
+        SELECT * FROM address WHERE user_id = #{userId} AND is_default = 1 LIMIT 1
+    </select>
+    
+    <!-- 清除用户的默认地址标记 -->
+    <update id="clearDefaultAddress">
+        UPDATE address SET is_default = 0 WHERE user_id = #{userId}
+    </update>
+    
+</mapper>
+
