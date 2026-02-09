@@ -16,6 +16,9 @@
                      OR b.author LIKE CONCAT('%', #{keyword}, '%')
                      OR b.publisher LIKE CONCAT('%', #{keyword}, '%'))
             </if>
+            <if test="status != null">
+                AND b.status = #{status}
+            </if>
         </where>
         ORDER BY b.create_time DESC
     </select>

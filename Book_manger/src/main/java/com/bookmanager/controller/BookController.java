@@ -1,11 +1,17 @@
 package com.bookmanager.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.bookmanager.common.PageResult;
 import com.bookmanager.common.Result;
 import com.bookmanager.entity.Book;
+import com.bookmanager.exception.BusinessException;
+import com.bookmanager.service.BookService;
+import com.bookmanager.service.BrowseHistoryService;
+import com.bookmanager.utils.UserContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +24,12 @@ import java.util.List;
 @RequestMapping("/api/book")
 public class BookController {
 
+    @Autowired
+    private BookService bookService;
+
+    @Autowired(required = false)
+    private BrowseHistoryService browseHistoryService;
+
     @ApiOperation("获取图书列表（分页）")
     @GetMapping("/list")
     public Result<PageResult<Book>> getBookList(
@@ -25,15 +37,30 @@ public class BookController {
             @ApiParam("每页数量") @RequestParam(defaultValue = "10") Integer size,
             @ApiParam("分类ID") @RequestParam(required = false) Long categoryId,
             @ApiParam("关键词") @RequestParam(required = false) String keyword) {
-        // TODO: 实现获取图书列表
-        return Result.success();
+        IPage<Book> bookPage = bookService.getBookPage(page, size, categoryId, keyword);
+        PageResult<Book> result = PageResult.of(
+                bookPage.getTotal(),
+                bookPage.getRecords(),
+                bookPage.getCurrent(),
+                bookPage.getSize()
+        );
+        return Result.success(result);
     }
 
     @ApiOperation("获取图书详情")
     @GetMapping("/detail/{id}")
     public Result<Book> getBookDetail(@PathVariable Long id) {
-        // TODO: 实现获取图书详情
-        return Result.success();
+        Book book = bookService.getBookDetail(id);
+        if (book == null || book.getStatus() == null || book.getStatus() != 1) {
+            throw new BusinessException("图书不存在或已下架");
+        }
+
+        Long userId = UserContext.getUserId();
+        if (userId != null && browseHistoryService != null) {
+            browseHistoryService.recordBrowse(userId, id);
+        }
+
+        return Result.success(book);
     }
 
     @ApiOperation("搜索图书")
@@ -42,24 +69,28 @@ public class BookController {
             @ApiParam("关键词") @RequestParam String keyword,
             @ApiParam("页码") @RequestParam(defaultValue = "1") Integer page,
             @ApiParam("每页数量") @RequestParam(defaultValue = "10") Integer size) {
-        // TODO: 实现搜索图书
-        return Result.success();
+        IPage<Book> bookPage = bookService.getBookPage(page, size, null, keyword);
+        PageResult<Book> result = PageResult.of(
+                bookPage.getTotal(),
+                bookPage.getRecords(),
+                bookPage.getCurrent(),
+                bookPage.getSize()
+        );
+        return Result.success(result);
     }
 
     @ApiOperation("获取热门图书")
     @GetMapping("/hot")
     public Result<List<Book>> getHotBooks(
             @ApiParam("数量") @RequestParam(defaultValue = "10") Integer limit) {
-        // TODO: 实现获取热门图书
-        return Result.success();
+        return Result.success(bookService.getHotBooks(limit));
     }
 
     @ApiOperation("获取新书推荐")
     @GetMapping("/new")
     public Result<List<Book>> getNewBooks(
             @ApiParam("数量") @RequestParam(defaultValue = "10") Integer limit) {
-        // TODO: 实现获取新书推荐
-        return Result.success();
+        return Result.success(bookService.getNewBooks(limit));
     }
 }
 

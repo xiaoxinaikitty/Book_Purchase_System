@@ -15,6 +15,11 @@ public interface BookService extends IService<Book> {
      * 分页查询图书
      */
     IPage<Book> getBookPage(Integer page, Integer size, Long categoryId, String keyword);
+
+    /**
+     * 管理员分页查询图书
+     */
+    IPage<Book> getBookPageAdmin(Integer page, Integer size, Long categoryId, String keyword, Integer status);
     
     /**
      * 获取图书详情
@@ -45,6 +50,11 @@ public interface BookService extends IService<Book> {
      * 删除图书
      */
     boolean deleteBook(Long id);
+
+    /**
+     * 更新图书状态
+     */
+    boolean updateStatus(Long id, Integer status);
     
     /**
      * 更新图书库存

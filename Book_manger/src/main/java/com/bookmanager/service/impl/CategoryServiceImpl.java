@@ -1,12 +1,17 @@
 package com.bookmanager.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bookmanager.entity.Category;
+import com.bookmanager.exception.BusinessException;
 import com.bookmanager.mapper.CategoryMapper;
 import com.bookmanager.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 分类服务实现类
@@ -16,32 +21,61 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     public List<Category> getAllCategories() {
-        // TODO: 实现获取所有分类
-        return null;
+        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByAsc(Category::getSort, Category::getId);
+        return this.list(wrapper);
     }
 
     @Override
     public List<Category> getCategoryTree() {
-        // TODO: 实现获取分类树结构
-        return null;
+        List<Category> all = getAllCategories();
+        if (all == null || all.isEmpty()) {
+            return new ArrayList<>();
+        }
+        Map<Long, Category> map = all.stream()
+                .collect(Collectors.toMap(Category::getId, item -> item, (a, b) -> a));
+        List<Category> roots = new ArrayList<>();
+        for (Category category : all) {
+            Long parentId = category.getParentId();
+            if (parentId == null || parentId == 0L) {
+                roots.add(category);
+            } else {
+                Category parent = map.get(parentId);
+                if (parent != null) {
+                    if (parent.getChildren() == null) {
+                        parent.setChildren(new ArrayList<>());
+                    }
+                    parent.getChildren().add(category);
+                } else {
+                    roots.add(category);
+                }
+            }
+        }
+        return roots;
     }
 
     @Override
     public boolean addCategory(Category category) {
-        // TODO: 实现添加分类
-        return false;
+        return this.save(category);
     }
 
     @Override
     public boolean updateCategory(Category category) {
-        // TODO: 实现更新分类
-        return false;
+        if (category.getId() == null) {
+            throw new BusinessException("分类ID不能为空");
+        }
+        return this.updateById(category);
     }
 
     @Override
     public boolean deleteCategory(Long id) {
-        // TODO: 实现删除分类
-        return false;
+        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Category::getParentId, id);
+        long childCount = this.count(wrapper);
+        if (childCount > 0) {
+            throw new BusinessException("请先删除子分类");
+        }
+        return this.removeById(id);
     }
 }
 

@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 图书分类实体类
@@ -41,5 +42,11 @@ public class Category implements Serializable {
      */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+
+    /**
+     * 子分类列表（非数据库字段）
+     */
+    @TableField(exist = false)
+    private List<Category> children;
 }
 

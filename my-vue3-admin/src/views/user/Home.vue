@@ -9,8 +9,8 @@
         </div>
 
         <nav class="navbar-menu">
-          <a href="#" class="menu-item active">首页</a>
-          <a href="#" class="menu-item">图书分类</a>
+          <router-link to="/home" class="menu-item active">首页</router-link>
+          <router-link to="/books" class="menu-item">图书分类</router-link>
           <a href="#" class="menu-item">推荐</a>
           <a href="#" class="menu-item">购物车</a>
         </nav>
@@ -97,7 +97,7 @@
       <!-- 占位提示 -->
       <section class="placeholder-section">
         <el-empty description="首页内容开发中，敬请期待...">
-          <el-button type="primary">浏览图书</el-button>
+          <el-button type="primary" @click="router.push('/books')">浏览图书</el-button>
         </el-empty>
       </section>
     </main>

@@ -19,7 +19,10 @@ public interface BookMapper extends BaseMapper<Book> {
     /**
      * 分页查询图书（包含分类名称）
      */
-    IPage<Book> selectBookPage(Page<Book> page, @Param("categoryId") Long categoryId, @Param("keyword") String keyword);
+    IPage<Book> selectBookPage(Page<Book> page,
+                               @Param("categoryId") Long categoryId,
+                               @Param("keyword") String keyword,
+                               @Param("status") Integer status);
     
     /**
      * 根据ID查询图书详情（包含分类名称）

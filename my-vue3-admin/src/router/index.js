@@ -25,6 +25,18 @@ const routes = [
     meta: { title: '首页', requiresAuth: true, role: 0 }
   },
   {
+    path: '/books',
+    name: 'UserBooks',
+    component: () => import('@/views/user/Books.vue'),
+    meta: { title: '图书列表', requiresAuth: true, role: 0 }
+  },
+  {
+    path: '/book/:id',
+    name: 'UserBookDetail',
+    component: () => import('@/views/user/BookDetail.vue'),
+    meta: { title: '图书详情', requiresAuth: true, role: 0 }
+  },
+  {
     path: '/profile',
     name: 'UserProfile',
     component: () => import('@/views/user/Profile.vue'),
@@ -48,6 +60,18 @@ const routes = [
     name: 'AdminUsers',
     component: () => import('@/views/admin/UserManage.vue'),
     meta: { title: '用户管理', requiresAuth: true, role: 1 }
+  },
+  {
+    path: '/admin/books',
+    name: 'AdminBooks',
+    component: () => import('@/views/admin/BookManage.vue'),
+    meta: { title: '图书管理', requiresAuth: true, role: 1 }
+  },
+  {
+    path: '/admin/categories',
+    name: 'AdminCategories',
+    component: () => import('@/views/admin/CategoryManage.vue'),
+    meta: { title: '分类管理', requiresAuth: true, role: 1 }
   },
   // 404 页面
   {

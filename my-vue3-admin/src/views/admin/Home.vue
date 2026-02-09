@@ -16,14 +16,22 @@
           <el-icon><HomeFilled /></el-icon>
           <span v-show="!isCollapsed">控制台</span>
         </router-link>
-        <div class="menu-item disabled">
+        <router-link
+          class="menu-item"
+          :class="{ active: isActive('/admin/books') }"
+          to="/admin/books"
+        >
           <el-icon><Reading /></el-icon>
           <span v-show="!isCollapsed">图书管理</span>
-        </div>
-        <div class="menu-item disabled">
+        </router-link>
+        <router-link
+          class="menu-item"
+          :class="{ active: isActive('/admin/categories') }"
+          to="/admin/categories"
+        >
           <el-icon><Folder /></el-icon>
           <span v-show="!isCollapsed">分类管理</span>
-        </div>
+        </router-link>
         <router-link
           class="menu-item"
           :class="{ active: isActive('/admin/users') }"
@@ -255,6 +263,7 @@ const handleCommand = async (command) => {
 .menu-item.disabled {
   cursor: not-allowed;
   opacity: 0.6;
+  pointer-events: none;
 }
 
 /* 主内容区 */
