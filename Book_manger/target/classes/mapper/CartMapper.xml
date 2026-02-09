@@ -4,7 +4,7 @@
     
     <!-- 查询用户购物车列表 -->
     <select id="selectCartListByUserId" resultMap="cartResultMap">
-        SELECT c.*, b.id as book_id, b.title, b.author, b.price, b.cover_image, b.stock
+        SELECT c.*, b.id as book_id, b.title, b.author, b.price, b.cover_image, b.stock, b.status
         FROM cart c
         LEFT JOIN book b ON c.book_id = b.id
         WHERE c.user_id = #{userId}
@@ -24,6 +24,7 @@
             <result property="price" column="price"/>
             <result property="coverImage" column="cover_image"/>
             <result property="stock" column="stock"/>
+            <result property="status" column="status"/>
         </association>
     </resultMap>
 </mapper>

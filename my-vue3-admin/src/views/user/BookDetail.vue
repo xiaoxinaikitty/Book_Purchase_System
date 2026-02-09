@@ -24,7 +24,10 @@
             库存 {{ book.stock || 0 }}
           </el-tag>
         </div>
-        <el-button type="primary" size="large" disabled>加入购物车（待开发）</el-button>
+        <div class="cart-action">
+          <el-input-number v-model="quantity" :min="1" :max="book.stock || 999" />
+          <el-button type="primary" size="large" @click="handleAddToCart">加入购物车</el-button>
+        </div>
       </div>
     </div>
 
@@ -38,7 +41,9 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { getBookDetail } from '@/api/book'
+import { addToCart } from '@/api/cart'
 
 const route = useRoute()
 const router = useRouter()
@@ -46,6 +51,7 @@ const router = useRouter()
 const book = ref(null)
 const loading = ref(false)
 const defaultCover = '/vite.svg'
+const quantity = ref(1)
 
 const formatPrice = (price) => {
   if (price === null || price === undefined) return '0.00'
@@ -57,6 +63,7 @@ const loadDetail = async () => {
   try {
     const res = await getBookDetail(route.params.id)
     book.value = res.data
+    quantity.value = 1
   } catch (error) {
     console.error('获取图书详情失败:', error)
   } finally {
@@ -66,6 +73,16 @@ const loadDetail = async () => {
 
 const goBack = () => {
   router.push('/books')
+}
+
+const handleAddToCart = async () => {
+  if (!book.value) return
+  try {
+    const res = await addToCart({ bookId: book.value.id, quantity: quantity.value })
+    ElMessage.success(res.message || '已加入购物车')
+  } catch (error) {
+    console.error('加入购物车失败:', error)
+  }
 }
 
 onMounted(loadDetail)
@@ -134,6 +151,12 @@ watch(() => route.params.id, loadDetail)
   display: flex;
   gap: 10px;
   margin-bottom: 18px;
+}
+
+.cart-action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .desc-card {

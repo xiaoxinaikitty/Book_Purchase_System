@@ -31,6 +31,36 @@ const routes = [
     meta: { title: '图书列表', requiresAuth: true, role: 0 }
   },
   {
+    path: '/cart',
+    name: 'UserCart',
+    component: () => import('@/views/user/Cart.vue'),
+    meta: { title: '购物车', requiresAuth: true, role: 0 }
+  },
+  {
+    path: '/checkout',
+    name: 'UserCheckout',
+    component: () => import('@/views/user/Checkout.vue'),
+    meta: { title: '确认订单', requiresAuth: true, role: 0 }
+  },
+  {
+    path: '/address',
+    name: 'UserAddress',
+    component: () => import('@/views/user/Address.vue'),
+    meta: { title: '收货地址', requiresAuth: true, role: 0 }
+  },
+  {
+    path: '/orders',
+    name: 'UserOrders',
+    component: () => import('@/views/user/Orders.vue'),
+    meta: { title: '我的订单', requiresAuth: true, role: 0 }
+  },
+  {
+    path: '/order/:id',
+    name: 'UserOrderDetail',
+    component: () => import('@/views/user/OrderDetail.vue'),
+    meta: { title: '订单详情', requiresAuth: true, role: 0 }
+  },
+  {
     path: '/book/:id',
     name: 'UserBookDetail',
     component: () => import('@/views/user/BookDetail.vue'),
@@ -72,6 +102,12 @@ const routes = [
     name: 'AdminCategories',
     component: () => import('@/views/admin/CategoryManage.vue'),
     meta: { title: '分类管理', requiresAuth: true, role: 1 }
+  },
+  {
+    path: '/admin/orders',
+    name: 'AdminOrders',
+    component: () => import('@/views/admin/OrderManage.vue'),
+    meta: { title: '订单管理', requiresAuth: true, role: 1 }
   },
   // 404 页面
   {

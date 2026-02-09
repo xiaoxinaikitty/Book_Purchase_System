@@ -40,10 +40,14 @@
           <el-icon><UserFilled /></el-icon>
           <span v-show="!isCollapsed">用户管理</span>
         </router-link>
-        <div class="menu-item disabled">
+        <router-link
+          class="menu-item"
+          :class="{ active: isActive('/admin/orders') }"
+          to="/admin/orders"
+        >
           <el-icon><Document /></el-icon>
           <span v-show="!isCollapsed">订单管理</span>
-        </div>
+        </router-link>
         <div class="menu-item disabled">
           <el-icon><TrendCharts /></el-icon>
           <span v-show="!isCollapsed">数据统计</span>
