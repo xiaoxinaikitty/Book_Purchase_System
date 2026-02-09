@@ -32,6 +32,9 @@
                 <el-dropdown-item command="orders">
                   <el-icon><Document /></el-icon>我的订单
                 </el-dropdown-item>
+                <el-dropdown-item command="reviews">
+                  <el-icon><ChatLineRound /></el-icon>我的评价
+                </el-dropdown-item>
                 <el-dropdown-item command="favorites">
                   <el-icon><Star /></el-icon>我的收藏
                 </el-dropdown-item>
@@ -113,7 +116,7 @@
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import {
-  Reading, ArrowDown, ArrowRight, User, Document, Star,
+  Reading, ArrowDown, ArrowRight, User, Document, Star, ChatLineRound,
   SwitchButton, Search, TrendCharts, ShoppingCart, Collection
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store/user'
@@ -128,6 +131,9 @@ const handleCommand = async (command) => {
       break
     case 'orders':
       router.push('/orders')
+      break
+    case 'reviews':
+      router.push('/reviews')
       break
     case 'favorites':
       // router.push('/favorites')
