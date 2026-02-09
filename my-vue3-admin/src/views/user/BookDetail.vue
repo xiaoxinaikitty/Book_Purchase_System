@@ -27,6 +27,14 @@
         <div class="cart-action">
           <el-input-number v-model="quantity" :min="1" :max="book.stock || 999" />
           <el-button type="primary" size="large" @click="handleAddToCart">加入购物车</el-button>
+          <el-button
+            :type="isFavorited ? 'warning' : 'info'"
+            size="large"
+            :loading="favoriteLoading"
+            @click="toggleFavorite"
+          >
+            {{ isFavorited ? '已收藏' : '收藏' }}
+          </el-button>
         </div>
       </div>
     </div>
@@ -136,6 +144,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { getBookDetail } from '@/api/book'
 import { addToCart } from '@/api/cart'
 import { addReview, getBookReviews, deleteReview } from '@/api/review'
+import { addFavorite, removeFavorite, checkFavorite } from '@/api/favorite'
 import { useUserStore } from '@/store/user'
 
 const route = useRoute()
@@ -154,6 +163,9 @@ const reviewSize = ref(5)
 const reviewLoading = ref(false)
 const reviewSubmitting = ref(false)
 const reviewFormRef = ref(null)
+
+const isFavorited = ref(false)
+const favoriteLoading = ref(false)
 
 const reviewForm = reactive({
   rating: 5,
@@ -186,6 +198,7 @@ const loadDetail = async () => {
     const res = await getBookDetail(route.params.id)
     book.value = res.data
     quantity.value = 1
+    await loadFavoriteStatus()
   } catch (error) {
     console.error('获取图书详情失败:', error)
   } finally {
@@ -210,6 +223,16 @@ const loadReviews = async () => {
   }
 }
 
+const loadFavoriteStatus = async () => {
+  if (!route.params.id) return
+  try {
+    const res = await checkFavorite(route.params.id)
+    isFavorited.value = !!res.data
+  } catch (error) {
+    console.error('获取收藏状态失败:', error)
+  }
+}
+
 const goBack = () => {
   router.push('/books')
 }
@@ -221,6 +244,26 @@ const handleAddToCart = async () => {
     ElMessage.success(res.message || '已加入购物车')
   } catch (error) {
     console.error('加入购物车失败:', error)
+  }
+}
+
+const toggleFavorite = async () => {
+  if (!book.value) return
+  favoriteLoading.value = true
+  try {
+    if (isFavorited.value) {
+      const res = await removeFavorite(book.value.id)
+      ElMessage.success(res.message || '取消收藏成功')
+      isFavorited.value = false
+    } else {
+      const res = await addFavorite(book.value.id)
+      ElMessage.success(res.message || '收藏成功')
+      isFavorited.value = true
+    }
+  } catch (error) {
+    console.error('收藏操作失败:', error)
+  } finally {
+    favoriteLoading.value = false
   }
 }
 

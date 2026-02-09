@@ -11,7 +11,7 @@
         <nav class="navbar-menu">
           <router-link to="/home" class="menu-item active">首页</router-link>
           <router-link to="/books" class="menu-item">图书分类</router-link>
-          <a href="#" class="menu-item">推荐</a>
+          <router-link to="/favorites" class="menu-item">我的收藏</router-link>
           <router-link to="/cart" class="menu-item">购物车</router-link>
         </nav>
 
@@ -136,7 +136,7 @@ const handleCommand = async (command) => {
       router.push('/reviews')
       break
     case 'favorites':
-      // router.push('/favorites')
+      router.push('/favorites')
       break
     case 'logout':
       try {
