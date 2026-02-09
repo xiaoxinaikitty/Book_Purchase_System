@@ -24,6 +24,12 @@ const routes = [
     component: () => import('@/views/user/Home.vue'),
     meta: { title: '首页', requiresAuth: true, role: 0 }
   },
+  {
+    path: '/profile',
+    name: 'UserProfile',
+    component: () => import('@/views/user/Profile.vue'),
+    meta: { title: '个人中心', requiresAuth: true, role: 0 }
+  },
   // 管理员端路由
   {
     path: '/admin/login',
@@ -36,6 +42,12 @@ const routes = [
     name: 'AdminHome',
     component: () => import('@/views/admin/Home.vue'),
     meta: { title: '管理后台', requiresAuth: true, role: 1 }
+  },
+  {
+    path: '/admin/users',
+    name: 'AdminUsers',
+    component: () => import('@/views/admin/UserManage.vue'),
+    meta: { title: '用户管理', requiresAuth: true, role: 1 }
   },
   // 404 页面
   {
@@ -55,10 +67,10 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // 设置页面标题
   document.title = to.meta.title ? `${to.meta.title} - 购书推荐系统` : '购书推荐系统'
-  
+
   const token = localStorage.getItem('token')
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
-  
+
   // 不需要登录的页面
   if (!to.meta.requiresAuth) {
     // 如果已登录，跳转到对应首页
@@ -73,7 +85,7 @@ router.beforeEach((to, from, next) => {
     next()
     return
   }
-  
+
   // 需要登录的页面
   if (!token) {
     // 未登录，跳转到登录页
@@ -84,16 +96,15 @@ router.beforeEach((to, from, next) => {
     }
     return
   }
-  
+
   // 验证角色权限
   if (to.meta.role !== undefined && userInfo.role !== to.meta.role) {
     // 角色不匹配，跳转到对应首页
     next(userInfo.role === 1 ? '/admin/home' : '/home')
     return
   }
-  
+
   next()
 })
 
 export default router
-

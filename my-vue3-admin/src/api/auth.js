@@ -80,3 +80,14 @@ export function updatePassword(data) {
   })
 }
 
+/**
+ * 更新头像
+ * @param {String} avatar
+ */
+export function updateAvatar(avatar) {
+  return request({
+    url: '/user/avatar',
+    method: 'put',
+    params: { avatar }
+  })
+}

@@ -7,14 +7,14 @@
           <el-icon :size="28"><Reading /></el-icon>
           <span>购书推荐系统</span>
         </div>
-        
+
         <nav class="navbar-menu">
           <a href="#" class="menu-item active">首页</a>
           <a href="#" class="menu-item">图书分类</a>
           <a href="#" class="menu-item">推荐</a>
           <a href="#" class="menu-item">购物车</a>
         </nav>
-        
+
         <div class="navbar-actions">
           <el-dropdown trigger="click" @command="handleCommand">
             <div class="user-info">
@@ -44,7 +44,7 @@
         </div>
       </div>
     </header>
-    
+
     <!-- 主体内容区 -->
     <main class="main-content">
       <!-- 欢迎横幅 -->
@@ -61,7 +61,7 @@
           <el-icon :size="200" color="rgba(255,255,255,0.2)"><Reading /></el-icon>
         </div>
       </section>
-      
+
       <!-- 功能入口 -->
       <section class="quick-actions">
         <div class="action-card">
@@ -93,7 +93,7 @@
           <p>收藏喜爱的图书</p>
         </div>
       </section>
-      
+
       <!-- 占位提示 -->
       <section class="placeholder-section">
         <el-empty description="首页内容开发中，敬请期待...">
@@ -101,7 +101,7 @@
         </el-empty>
       </section>
     </main>
-    
+
     <!-- 底部 -->
     <footer class="footer">
       <p>© 2024 购书推荐系统 · 基于 KNN 算法的智能图书推荐平台</p>
@@ -112,9 +112,9 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
-import { 
-  Reading, ArrowDown, ArrowRight, User, Document, Star, 
-  SwitchButton, Search, TrendCharts, ShoppingCart, Collection 
+import {
+  Reading, ArrowDown, ArrowRight, User, Document, Star,
+  SwitchButton, Search, TrendCharts, ShoppingCart, Collection
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store/user'
 
@@ -124,7 +124,7 @@ const userStore = useUserStore()
 const handleCommand = async (command) => {
   switch (command) {
     case 'profile':
-      // router.push('/profile')
+      router.push('/profile')
       break
     case 'orders':
       // router.push('/orders')
@@ -354,7 +354,7 @@ const handleCommand = async (command) => {
   .quick-actions {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .navbar-menu {
     display: none;
   }
@@ -364,18 +364,17 @@ const handleCommand = async (command) => {
   .quick-actions {
     grid-template-columns: 1fr;
   }
-  
+
   .welcome-banner {
     padding: 32px 24px;
   }
-  
+
   .banner-content h1 {
     font-size: 24px;
   }
-  
+
   .banner-illustration {
     display: none;
   }
 }
 </style>
-

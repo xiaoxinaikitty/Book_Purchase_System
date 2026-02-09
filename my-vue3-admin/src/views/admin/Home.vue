@@ -6,52 +6,60 @@
         <el-icon :size="28"><Monitor /></el-icon>
         <span v-show="!isCollapsed" class="logo-text">管理后台</span>
       </div>
-      
+
       <nav class="sidebar-menu">
-        <div class="menu-item active">
+        <router-link
+          class="menu-item"
+          :class="{ active: isActive('/admin/home') }"
+          to="/admin/home"
+        >
           <el-icon><HomeFilled /></el-icon>
           <span v-show="!isCollapsed">控制台</span>
-        </div>
-        <div class="menu-item">
+        </router-link>
+        <div class="menu-item disabled">
           <el-icon><Reading /></el-icon>
           <span v-show="!isCollapsed">图书管理</span>
         </div>
-        <div class="menu-item">
+        <div class="menu-item disabled">
           <el-icon><Folder /></el-icon>
           <span v-show="!isCollapsed">分类管理</span>
         </div>
-        <div class="menu-item">
+        <router-link
+          class="menu-item"
+          :class="{ active: isActive('/admin/users') }"
+          to="/admin/users"
+        >
           <el-icon><UserFilled /></el-icon>
           <span v-show="!isCollapsed">用户管理</span>
-        </div>
-        <div class="menu-item">
+        </router-link>
+        <div class="menu-item disabled">
           <el-icon><Document /></el-icon>
           <span v-show="!isCollapsed">订单管理</span>
         </div>
-        <div class="menu-item">
+        <div class="menu-item disabled">
           <el-icon><TrendCharts /></el-icon>
           <span v-show="!isCollapsed">数据统计</span>
         </div>
-        <div class="menu-item">
+        <div class="menu-item disabled">
           <el-icon><Setting /></el-icon>
           <span v-show="!isCollapsed">系统设置</span>
         </div>
       </nav>
     </aside>
-    
+
     <!-- 主内容区 -->
     <div class="main-wrapper">
       <!-- 顶部栏 -->
       <header class="topbar">
         <div class="topbar-left">
-          <el-button 
-            text 
-            :icon="isCollapsed ? Expand : Fold" 
+          <el-button
+            text
+            :icon="isCollapsed ? Expand : Fold"
             @click="isCollapsed = !isCollapsed"
           />
           <span class="page-title">控制台</span>
         </div>
-        
+
         <div class="topbar-right">
           <el-dropdown trigger="click" @command="handleCommand">
             <div class="admin-info">
@@ -77,7 +85,7 @@
           </el-dropdown>
         </div>
       </header>
-      
+
       <!-- 主内容 -->
       <main class="main-content">
         <!-- 统计卡片 -->
@@ -119,7 +127,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- 占位内容 -->
         <div class="content-placeholder">
           <el-empty description="后台功能开发中，敬请期待...">
@@ -135,17 +143,20 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
-import { 
-  Monitor, HomeFilled, Reading, Folder, UserFilled, Document, 
-  TrendCharts, Setting, Fold, Expand, ArrowDown, User, SwitchButton, Coin 
+import {
+  Monitor, HomeFilled, Reading, Folder, UserFilled, Document,
+  TrendCharts, Setting, Fold, Expand, ArrowDown, User, SwitchButton, Coin
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store/user'
 
 const router = useRouter()
+const route = useRoute()
 const userStore = useUserStore()
 const isCollapsed = ref(false)
+
+const isActive = (path) => route.path === path
 
 const handleCommand = async (command) => {
   switch (command) {
@@ -223,6 +234,7 @@ const handleCommand = async (command) => {
   cursor: pointer;
   transition: all 0.3s;
   font-size: 14px;
+  text-decoration: none;
 }
 
 .sidebar.collapsed .menu-item {
@@ -238,6 +250,11 @@ const handleCommand = async (command) => {
 .menu-item.active {
   color: #fff;
   background: #1890ff;
+}
+
+.menu-item.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* 主内容区 */
@@ -379,24 +396,23 @@ const handleCommand = async (command) => {
   .sidebar {
     width: 64px;
   }
-  
+
   .sidebar .logo-text,
   .sidebar .menu-item span {
     display: none;
   }
-  
+
   .sidebar .menu-item {
     justify-content: center;
     padding: 14px;
   }
-  
+
   .main-wrapper {
     margin-left: 64px;
   }
-  
+
   .stat-cards {
     grid-template-columns: 1fr;
   }
 }
 </style>
-
