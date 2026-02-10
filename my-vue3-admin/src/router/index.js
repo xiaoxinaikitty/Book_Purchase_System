@@ -67,6 +67,12 @@ const routes = [
     meta: { title: '我的收藏', requiresAuth: true, role: 0 }
   },
   {
+    path: '/history',
+    name: 'UserHistory',
+    component: () => import('@/views/user/History.vue'),
+    meta: { title: '浏览记录', requiresAuth: true, role: 0 }
+  },
+  {
     path: '/order/:id',
     name: 'UserOrderDetail',
     component: () => import('@/views/user/OrderDetail.vue'),

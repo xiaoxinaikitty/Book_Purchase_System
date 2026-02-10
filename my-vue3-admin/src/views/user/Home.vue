@@ -12,6 +12,7 @@
           <router-link to="/home" class="menu-item active">首页</router-link>
           <router-link to="/books" class="menu-item">图书分类</router-link>
           <router-link to="/favorites" class="menu-item">我的收藏</router-link>
+          <router-link to="/history" class="menu-item">浏览记录</router-link>
           <router-link to="/cart" class="menu-item">购物车</router-link>
         </nav>
 
@@ -37,6 +38,9 @@
                 </el-dropdown-item>
                 <el-dropdown-item command="favorites">
                   <el-icon><Star /></el-icon>我的收藏
+                </el-dropdown-item>
+                <el-dropdown-item command="history">
+                  <el-icon><Clock /></el-icon>浏览记录
                 </el-dropdown-item>
                 <el-dropdown-item divided command="logout">
                   <el-icon><SwitchButton /></el-icon>退出登录
@@ -116,7 +120,7 @@
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import {
-  Reading, ArrowDown, ArrowRight, User, Document, Star, ChatLineRound,
+  Reading, ArrowDown, ArrowRight, User, Document, Star, ChatLineRound, Clock,
   SwitchButton, Search, TrendCharts, ShoppingCart, Collection
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store/user'
@@ -137,6 +141,9 @@ const handleCommand = async (command) => {
       break
     case 'favorites':
       router.push('/favorites')
+      break
+    case 'history':
+      router.push('/history')
       break
     case 'logout':
       try {

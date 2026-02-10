@@ -7,6 +7,7 @@ import com.bookmanager.entity.Book;
 import com.bookmanager.exception.BusinessException;
 import com.bookmanager.service.BookService;
 import com.bookmanager.service.BrowseHistoryService;
+import com.bookmanager.utils.JwtUtils;
 import com.bookmanager.utils.UserContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 图书控制器（用户端）
@@ -29,6 +31,9 @@ public class BookController {
 
     @Autowired(required = false)
     private BrowseHistoryService browseHistoryService;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @ApiOperation("获取图书列表（分页）")
     @GetMapping("/list")
@@ -49,18 +54,33 @@ public class BookController {
 
     @ApiOperation("获取图书详情")
     @GetMapping("/detail/{id}")
-    public Result<Book> getBookDetail(@PathVariable Long id) {
+    public Result<Book> getBookDetail(@PathVariable Long id, HttpServletRequest request) {
         Book book = bookService.getBookDetail(id);
         if (book == null || book.getStatus() == null || book.getStatus() != 1) {
             throw new BusinessException("图书不存在或已下架");
         }
 
         Long userId = UserContext.getUserId();
+        if (userId == null) {
+            userId = getUserIdFromRequest(request);
+        }
         if (userId != null && browseHistoryService != null) {
             browseHistoryService.recordBrowse(userId, id);
         }
 
         return Result.success(book);
+    }
+
+    private Long getUserIdFromRequest(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header == null || header.isEmpty()) {
+            return null;
+        }
+        String token = header.startsWith("Bearer ") ? header.substring(7) : header;
+        if (!jwtUtils.validateToken(token)) {
+            return null;
+        }
+        return jwtUtils.getUserIdFromToken(token);
     }
 
     @ApiOperation("搜索图书")

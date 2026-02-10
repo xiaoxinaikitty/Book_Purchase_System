@@ -13,6 +13,15 @@
             LIMIT #{limit}
         </if>
     </select>
+
+    <!-- 分页查询用户浏览记录 -->
+    <select id="selectHistoryPage" resultMap="browseHistoryResultMap">
+        SELECT bh.*, b.id as bid, b.title, b.author, b.price, b.cover_image
+        FROM browse_history bh
+        LEFT JOIN book b ON bh.book_id = b.id
+        WHERE bh.user_id = #{userId}
+        ORDER BY bh.last_browse_time DESC
+    </select>
     
     <resultMap id="browseHistoryResultMap" type="com.bookmanager.entity.BrowseHistory">
         <id property="id" column="id"/>
