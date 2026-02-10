@@ -44,6 +44,32 @@
       <p>{{ book.description || '暂无简介' }}</p>
     </section>
 
+    <section v-if="book" class="similar-section" v-loading="similarLoading">
+      <div class="similar-header">
+        <div>
+          <h2>相似图书</h2>
+          <p>与你当前浏览图书类型相近</p>
+        </div>
+      </div>
+      <div class="similar-grid">
+        <div
+          v-for="item in similarList"
+          :key="item.id"
+          class="similar-card"
+          @click="goSimilar(item.id)"
+        >
+          <img :src="item.coverImage || defaultCover" alt="cover" />
+          <div class="info">
+            <div class="title">{{ item.title }}</div>
+            <div class="meta">¥{{ formatPrice(item.price) }}</div>
+          </div>
+        </div>
+        <div v-if="!similarLoading && similarList.length === 0" class="similar-empty">
+          暂无相似图书推荐
+        </div>
+      </div>
+    </section>
+
     <section v-if="book" class="review-section">
       <div class="review-header">
         <div>
@@ -144,6 +170,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { getBookDetail } from '@/api/book'
 import { addToCart } from '@/api/cart'
 import { addReview, getBookReviews, deleteReview } from '@/api/review'
+import { getSimilarRecommend } from '@/api/recommend'
 import { addFavorite, removeFavorite, checkFavorite } from '@/api/favorite'
 import { useUserStore } from '@/store/user'
 
@@ -166,6 +193,9 @@ const reviewFormRef = ref(null)
 
 const isFavorited = ref(false)
 const favoriteLoading = ref(false)
+
+const similarList = ref([])
+const similarLoading = ref(false)
 
 const reviewForm = reactive({
   rating: 5,
@@ -199,6 +229,7 @@ const loadDetail = async () => {
     book.value = res.data
     quantity.value = 1
     await loadFavoriteStatus()
+    await loadSimilar()
   } catch (error) {
     console.error('获取图书详情失败:', error)
   } finally {
@@ -223,6 +254,19 @@ const loadReviews = async () => {
   }
 }
 
+const loadSimilar = async () => {
+  if (!route.params.id) return
+  similarLoading.value = true
+  try {
+    const res = await getSimilarRecommend(route.params.id, { limit: 6 })
+    similarList.value = res.data || []
+  } catch (error) {
+    console.error('获取相似图书失败:', error)
+  } finally {
+    similarLoading.value = false
+  }
+}
+
 const loadFavoriteStatus = async () => {
   if (!route.params.id) return
   try {
@@ -235,6 +279,10 @@ const loadFavoriteStatus = async () => {
 
 const goBack = () => {
   router.push('/books')
+}
+
+const goSimilar = (id) => {
+  router.push(`/book/${id}`)
 }
 
 const handleAddToCart = async () => {
@@ -566,6 +614,76 @@ watch(() => route.params.id, reloadAll)
   margin-top: 16px;
 }
 
+.similar-section {
+  max-width: 1200px;
+  margin: 24px auto 0;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
+}
+
+.similar-header h2 {
+  font-size: 18px;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.similar-header p {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.similar-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.similar-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.similar-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(17, 24, 39, 0.08);
+}
+
+.similar-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.similar-card .info {
+  padding: 10px;
+}
+
+.similar-card .title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.similar-card .meta {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.similar-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 13px;
+  padding: 20px 0;
+}
+
 @media (max-width: 900px) {
   .detail-card {
     grid-template-columns: 1fr;
@@ -576,6 +694,16 @@ watch(() => route.params.id, reloadAll)
   }
 
   .review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .similar-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .similar-grid {
     grid-template-columns: 1fr;
   }
 }

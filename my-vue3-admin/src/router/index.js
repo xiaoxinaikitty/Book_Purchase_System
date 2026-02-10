@@ -67,6 +67,12 @@ const routes = [
     meta: { title: '我的收藏', requiresAuth: true, role: 0 }
   },
   {
+    path: '/recommend',
+    name: 'UserRecommend',
+    component: () => import('@/views/user/Recommend.vue'),
+    meta: { title: '智能推荐', requiresAuth: true, role: 0 }
+  },
+  {
     path: '/history',
     name: 'UserHistory',
     component: () => import('@/views/user/History.vue'),

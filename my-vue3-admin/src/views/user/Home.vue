@@ -11,6 +11,7 @@
         <nav class="navbar-menu">
           <router-link to="/home" class="menu-item active">首页</router-link>
           <router-link to="/books" class="menu-item">图书分类</router-link>
+          <router-link to="/recommend" class="menu-item">智能推荐</router-link>
           <router-link to="/favorites" class="menu-item">我的收藏</router-link>
           <router-link to="/history" class="menu-item">浏览记录</router-link>
           <router-link to="/cart" class="menu-item">购物车</router-link>
@@ -32,6 +33,9 @@
                 </el-dropdown-item>
                 <el-dropdown-item command="orders">
                   <el-icon><Document /></el-icon>我的订单
+                </el-dropdown-item>
+                <el-dropdown-item command="recommend">
+                  <el-icon><Compass /></el-icon>智能推荐
                 </el-dropdown-item>
                 <el-dropdown-item command="reviews">
                   <el-icon><ChatLineRound /></el-icon>我的评价
@@ -120,7 +124,7 @@
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import {
-  Reading, ArrowDown, ArrowRight, User, Document, Star, ChatLineRound, Clock,
+  Reading, ArrowDown, ArrowRight, User, Document, Star, ChatLineRound, Clock, Compass,
   SwitchButton, Search, TrendCharts, ShoppingCart, Collection
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store/user'
@@ -135,6 +139,9 @@ const handleCommand = async (command) => {
       break
     case 'orders':
       router.push('/orders')
+      break
+    case 'recommend':
+      router.push('/recommend')
       break
     case 'reviews':
       router.push('/reviews')
