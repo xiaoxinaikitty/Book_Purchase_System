@@ -48,10 +48,14 @@
           <el-icon><Document /></el-icon>
           <span v-show="!isCollapsed">订单管理</span>
         </router-link>
-        <div class="menu-item disabled">
+        <router-link
+          class="menu-item"
+          :class="{ active: isActive('/admin/statistics') }"
+          to="/admin/statistics"
+        >
           <el-icon><TrendCharts /></el-icon>
           <span v-show="!isCollapsed">数据统计</span>
-        </div>
+        </router-link>
         <div class="menu-item disabled">
           <el-icon><Setting /></el-icon>
           <span v-show="!isCollapsed">系统设置</span>
@@ -107,7 +111,7 @@
               <el-icon :size="28"><UserFilled /></el-icon>
             </div>
             <div class="stat-info">
-              <span class="stat-value">1,234</span>
+              <span class="stat-value">{{ overview.userCount }}</span>
               <span class="stat-label">用户总数</span>
             </div>
           </div>
@@ -116,7 +120,7 @@
               <el-icon :size="28"><Reading /></el-icon>
             </div>
             <div class="stat-info">
-              <span class="stat-value">5,678</span>
+              <span class="stat-value">{{ overview.bookCount }}</span>
               <span class="stat-label">图书总数</span>
             </div>
           </div>
@@ -125,7 +129,7 @@
               <el-icon :size="28"><Document /></el-icon>
             </div>
             <div class="stat-info">
-              <span class="stat-value">892</span>
+              <span class="stat-value">{{ overview.orderCount }}</span>
               <span class="stat-label">订单总数</span>
             </div>
           </div>
@@ -134,7 +138,7 @@
               <el-icon :size="28"><Coin /></el-icon>
             </div>
             <div class="stat-info">
-              <span class="stat-value">¥86,420</span>
+              <span class="stat-value">¥{{ formatPrice(overview.totalSales) }}</span>
               <span class="stat-label">销售总额</span>
             </div>
           </div>
@@ -154,7 +158,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import {
@@ -162,11 +166,18 @@ import {
   TrendCharts, Setting, Fold, Expand, ArrowDown, User, SwitchButton, Coin
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store/user'
+import { getOverview } from '@/api/adminStatistics'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 const isCollapsed = ref(false)
+const overview = reactive({
+  userCount: 0,
+  bookCount: 0,
+  orderCount: 0,
+  totalSales: 0
+})
 
 const isActive = (path) => route.path === path
 
@@ -190,6 +201,24 @@ const handleCommand = async (command) => {
       break
   }
 }
+
+const formatPrice = (price) => {
+  if (price === null || price === undefined) return '0.00'
+  return Number(price).toFixed(2)
+}
+
+const loadOverview = async () => {
+  try {
+    const res = await getOverview()
+    Object.assign(overview, res.data || {})
+  } catch (error) {
+    console.error('获取统计数据失败:', error)
+  }
+}
+
+onMounted(() => {
+  loadOverview()
+})
 </script>
 
 <style scoped>

@@ -133,6 +133,12 @@ const routes = [
     component: () => import('@/views/admin/OrderManage.vue'),
     meta: { title: '订单管理', requiresAuth: true, role: 1 }
   },
+  {
+    path: '/admin/statistics',
+    name: 'AdminStatistics',
+    component: () => import('@/views/admin/Statistics.vue'),
+    meta: { title: '数据统计', requiresAuth: true, role: 1 }
+  },
   // 404 页面
   {
     path: '/:pathMatch(.*)*',

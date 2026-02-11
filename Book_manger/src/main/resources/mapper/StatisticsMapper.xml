@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookmanager.mapper.StatisticsMapper">
+
+    <select id="countUsers" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM user WHERE role = 0
+    </select>
+
+    <select id="countBooks" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM book
+    </select>
+
+    <select id="countOrders" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM `order`
+    </select>
+
+    <select id="sumSales" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(total_amount), 0)
+        FROM `order`
+        WHERE status IN (1, 2, 3)
+    </select>
+
+    <select id="countTodayUsers" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM user
+        WHERE role = 0
+          AND DATE(create_time) = CURDATE()
+    </select>
+
+    <select id="countTodayOrders" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM `order`
+        WHERE DATE(create_time) = CURDATE()
+    </select>
+
+    <select id="sumTodaySales" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(total_amount), 0)
+        FROM `order`
+        WHERE status IN (1, 2, 3)
+          AND DATE(create_time) = CURDATE()
+    </select>
+
+    <select id="selectSalesStatistics" resultType="java.util.Map">
+        SELECT DATE(create_time) AS date,
+               IFNULL(SUM(total_amount), 0) AS totalSales,
+               COUNT(*) AS orderCount
+        FROM `order`
+        WHERE status IN (1, 2, 3)
+        <if test="startDate != null and startDate != ''">
+            AND DATE(create_time) &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE(create_time) &lt;= #{endDate}
+        </if>
+        GROUP BY DATE(create_time)
+        ORDER BY date
+    </select>
+
+    <select id="selectCategorySales" resultType="java.util.Map">
+        SELECT c.id AS categoryId,
+               c.name AS categoryName,
+               IFNULL(SUM(oi.quantity), 0) AS totalQuantity,
+               IFNULL(SUM(oi.subtotal), 0) AS totalSales
+        FROM order_item oi
+        INNER JOIN `order` o ON oi.order_id = o.id
+        LEFT JOIN book b ON oi.book_id = b.id
+        LEFT JOIN category c ON b.category_id = c.id
+        WHERE o.status IN (1, 2, 3)
+        GROUP BY c.id, c.name
+        ORDER BY totalSales DESC
+    </select>
+
+    <select id="selectUserGrowth" resultType="java.util.Map">
+        SELECT DATE(create_time) AS date,
+               COUNT(*) AS userCount
+        FROM user
+        WHERE role = 0
+        <if test="startDate != null and startDate != ''">
+            AND DATE(create_time) &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE(create_time) &lt;= #{endDate}
+        </if>
+        GROUP BY DATE(create_time)
+        ORDER BY date
+    </select>
+</mapper>
