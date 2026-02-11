@@ -24,6 +24,16 @@
         </div>
         <el-divider />
         <el-form ref="avatarFormRef" :model="avatarForm" :rules="avatarRules" label-width="80px">
+          <el-form-item label="上传头像">
+            <el-upload
+              class="avatar-upload"
+              :show-file-list="false"
+              accept="image/*"
+              :http-request="handleAvatarUpload"
+            >
+              <el-button type="primary" plain>选择图片</el-button>
+            </el-upload>
+          </el-form-item>
           <el-form-item label="头像URL" prop="avatar">
             <el-input v-model="avatarForm.avatar" placeholder="https://example.com/avatar.jpg" clearable />
           </el-form-item>
@@ -74,6 +84,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/store/user'
 import { updateUserInfo, updatePassword, updateAvatar } from '@/api/auth'
+import { uploadAvatar } from '@/api/file'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -190,6 +201,30 @@ const handleUpdateAvatar = async () => {
       avatarLoading.value = false
     }
   })
+}
+
+const handleAvatarUpload = async (options) => {
+  const formData = new FormData()
+  formData.append('file', options.file)
+  avatarLoading.value = true
+  try {
+    const res = await uploadAvatar(formData)
+    avatarForm.avatar = res.data
+    const updateRes = await updateAvatar(res.data)
+    ElMessage.success(updateRes.message || '头像更新成功')
+    await userStore.fetchUserInfo()
+    syncUserInfo()
+    if (options.onSuccess) {
+      options.onSuccess(res.data)
+    }
+  } catch (error) {
+    if (options.onError) {
+      options.onError(error)
+    }
+    console.error('上传头像失败:', error)
+  } finally {
+    avatarLoading.value = false
+  }
 }
 
 const handleUpdatePassword = async () => {

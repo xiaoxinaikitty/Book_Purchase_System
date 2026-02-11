@@ -117,3 +117,17 @@ CREATE TABLE favorite (
     book_id BIGINT NOT NULL,
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 推荐算法配置表
+CREATE TABLE recommend_config (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    k_value INT DEFAULT 5,
+    similarity_type VARCHAR(20) DEFAULT 'cosine',
+    min_similarity DECIMAL(5,2) DEFAULT 0.10,
+    weight_review DECIMAL(5,2) DEFAULT 1.00,
+    weight_favorite DECIMAL(5,2) DEFAULT 0.70,
+    weight_browse DECIMAL(5,2) DEFAULT 0.30,
+    weight_purchase DECIMAL(5,2) DEFAULT 1.20,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

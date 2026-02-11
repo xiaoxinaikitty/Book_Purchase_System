@@ -1,8 +1,10 @@
 package com.bookmanager.service.impl;
 
 import com.bookmanager.entity.Book;
-import com.bookmanager.mapper.ReviewMapper;
+import com.bookmanager.entity.RecommendConfig;
+import com.bookmanager.mapper.RecommendMapper;
 import com.bookmanager.service.BookService;
+import com.bookmanager.service.RecommendConfigService;
 import com.bookmanager.service.RecommendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,30 +22,34 @@ public class RecommendServiceImpl implements RecommendService {
     private BookService bookService;
 
     @Autowired
-    private ReviewMapper reviewMapper;
+    private RecommendMapper recommendMapper;
+
+    @Autowired
+    private RecommendConfigService recommendConfigService;
 
     @Override
     public List<Book> personalRecommend(Long userId, int k, int limit) {
         if (userId == null) {
             return Collections.emptyList();
         }
-        int kValue = k <= 0 ? 5 : k;
+        RecommendConfig config = recommendConfigService.getConfig();
+        int kValue = k > 0 ? k : (config.getKValue() == null ? 5 : config.getKValue());
         int limitValue = limit <= 0 ? 10 : limit;
 
-        Map<Long, Map<Long, Integer>> userRatings = buildUserRatingMatrix();
-        Map<Long, Integer> targetRatings = userRatings.get(userId);
-        if (targetRatings == null || targetRatings.isEmpty()) {
+        Map<Long, Map<Long, Double>> userScores = buildUserScoreMatrix(config);
+        Map<Long, Double> targetScores = userScores.get(userId);
+        if (targetScores == null || targetScores.isEmpty()) {
             return hotRecommend(limitValue);
         }
 
         List<UserSimilarity> similarities = new ArrayList<>();
-        for (Map.Entry<Long, Map<Long, Integer>> entry : userRatings.entrySet()) {
+        for (Map.Entry<Long, Map<Long, Double>> entry : userScores.entrySet()) {
             Long otherUserId = entry.getKey();
             if (otherUserId.equals(userId)) {
                 continue;
             }
-            double sim = cosineSimilarity(targetRatings, entry.getValue());
-            if (sim > 0) {
+            double sim = calcSimilarity(config.getSimilarityType(), targetScores, entry.getValue());
+            if (sim >= getMinSimilarity(config)) {
                 similarities.add(new UserSimilarity(otherUserId, sim));
             }
         }
@@ -59,13 +65,13 @@ public class RecommendServiceImpl implements RecommendService {
 
         Map<Long, Double> scoreMap = new HashMap<>();
         for (UserSimilarity neighbor : neighbors) {
-            Map<Long, Integer> neighborRatings = userRatings.get(neighbor.userId);
+            Map<Long, Double> neighborRatings = userScores.get(neighbor.userId);
             if (neighborRatings == null) {
                 continue;
             }
-            for (Map.Entry<Long, Integer> ratingEntry : neighborRatings.entrySet()) {
+            for (Map.Entry<Long, Double> ratingEntry : neighborRatings.entrySet()) {
                 Long bookId = ratingEntry.getKey();
-                if (targetRatings.containsKey(bookId)) {
+                if (targetScores.containsKey(bookId)) {
                     continue;
                 }
                 scoreMap.merge(bookId, neighbor.similarity * ratingEntry.getValue(), Double::sum);
@@ -124,7 +130,7 @@ public class RecommendServiceImpl implements RecommendService {
         if (userId == null) {
             return hotRecommend(limitValue);
         }
-        List<Book> personal = personalRecommend(userId, 5, limitValue);
+        List<Book> personal = personalRecommend(userId, 0, limitValue);
         if (personal.size() < limitValue) {
             fillWithHot(personal, limitValue);
         }
@@ -136,33 +142,83 @@ public class RecommendServiceImpl implements RecommendService {
         return bookService.getNewBooks(limit);
     }
 
-    private Map<Long, Map<Long, Integer>> buildUserRatingMatrix() {
-        Map<Long, Map<Long, Integer>> userRatings = new HashMap<>();
-        List<Map<String, Object>> rows = reviewMapper.selectUserRatingMatrix();
-        for (Map<String, Object> row : rows) {
-            Long userId = row.get("user_id") instanceof Number ? ((Number) row.get("user_id")).longValue() : null;
-            Long bookId = row.get("book_id") instanceof Number ? ((Number) row.get("book_id")).longValue() : null;
-            Integer rating = row.get("rating") instanceof Number ? ((Number) row.get("rating")).intValue() : null;
+    private Map<Long, Map<Long, Double>> buildUserScoreMatrix(RecommendConfig config) {
+        Map<Long, Map<Long, Double>> userScores = new HashMap<>();
+        double weightReview = getWeight(config.getWeightReview(), 1.0);
+        double weightFavorite = getWeight(config.getWeightFavorite(), 0.7);
+        double weightBrowse = getWeight(config.getWeightBrowse(), 0.3);
+        double weightPurchase = getWeight(config.getWeightPurchase(), 1.2);
+
+        List<Map<String, Object>> reviewRows = recommendMapper.selectReviewScores();
+        for (Map<String, Object> row : reviewRows) {
+            Long userId = getLong(row.get("user_id"));
+            Long bookId = getLong(row.get("book_id"));
+            Double rating = getDouble(row.get("rating"));
             if (userId == null || bookId == null || rating == null) {
                 continue;
             }
-            userRatings.computeIfAbsent(userId, key -> new HashMap<>()).put(bookId, rating);
+            addScore(userScores, userId, bookId, rating * weightReview);
         }
-        return userRatings;
+
+        List<Map<String, Object>> favoriteRows = recommendMapper.selectFavorites();
+        for (Map<String, Object> row : favoriteRows) {
+            Long userId = getLong(row.get("user_id"));
+            Long bookId = getLong(row.get("book_id"));
+            if (userId == null || bookId == null) {
+                continue;
+            }
+            addScore(userScores, userId, bookId, 5.0 * weightFavorite);
+        }
+
+        List<Map<String, Object>> browseRows = recommendMapper.selectBrowseHistory();
+        for (Map<String, Object> row : browseRows) {
+            Long userId = getLong(row.get("user_id"));
+            Long bookId = getLong(row.get("book_id"));
+            Double count = getDouble(row.get("browse_count"));
+            if (userId == null || bookId == null || count == null) {
+                continue;
+            }
+            double normalized = Math.min(count, 5.0);
+            addScore(userScores, userId, bookId, normalized * weightBrowse);
+        }
+
+        List<Map<String, Object>> purchaseRows = recommendMapper.selectPurchases();
+        for (Map<String, Object> row : purchaseRows) {
+            Long userId = getLong(row.get("user_id"));
+            Long bookId = getLong(row.get("book_id"));
+            if (userId == null || bookId == null) {
+                continue;
+            }
+            addScore(userScores, userId, bookId, 5.0 * weightPurchase);
+        }
+
+        return userScores;
     }
 
-    private double cosineSimilarity(Map<Long, Integer> a, Map<Long, Integer> b) {
+    private void addScore(Map<Long, Map<Long, Double>> userScores, Long userId, Long bookId, Double score) {
+        Map<Long, Double> map = userScores.computeIfAbsent(userId, key -> new HashMap<>());
+        map.merge(bookId, score, Double::sum);
+    }
+
+    private double calcSimilarity(String similarityType, Map<Long, Double> a, Map<Long, Double> b) {
+        if ("euclidean".equalsIgnoreCase(similarityType)) {
+            return euclideanSimilarity(a, b);
+        }
+        return cosineSimilarity(a, b);
+    }
+
+    private double cosineSimilarity(Map<Long, Double> a, Map<Long, Double> b) {
         double dot = 0;
         double normA = 0;
         double normB = 0;
-        for (Integer rating : a.values()) {
+        for (Double rating : a.values()) {
             normA += rating * rating;
         }
-        for (Integer rating : b.values()) {
+        for (Double rating : b.values()) {
             normB += rating * rating;
         }
-        for (Map.Entry<Long, Integer> entry : a.entrySet()) {
-            Integer otherRating = b.get(entry.getKey());
+        for (Map.Entry<Long, Double> entry : a.entrySet()) {
+            Double otherRating = b.get(entry.getKey());
             if (otherRating != null) {
                 dot += entry.getValue() * otherRating;
             }
@@ -171,6 +227,20 @@ public class RecommendServiceImpl implements RecommendService {
             return 0;
         }
         return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+    }
+
+    private double euclideanSimilarity(Map<Long, Double> a, Map<Long, Double> b) {
+        Set<Long> keys = new HashSet<>(a.keySet());
+        keys.addAll(b.keySet());
+        double sum = 0;
+        for (Long key : keys) {
+            double va = a.getOrDefault(key, 0.0);
+            double vb = b.getOrDefault(key, 0.0);
+            double diff = va - vb;
+            sum += diff * diff;
+        }
+        double distance = Math.sqrt(sum);
+        return 1.0 / (1.0 + distance);
     }
 
     private List<Book> fetchBooksInOrder(List<Long> bookIds, int limit) {
@@ -212,6 +282,42 @@ public class RecommendServiceImpl implements RecommendService {
                 break;
             }
         }
+    }
+
+    private Double getDouble(Object value) {
+        if (value instanceof Number) {
+            return ((Number) value).doubleValue();
+        }
+        try {
+            return value == null ? null : Double.parseDouble(String.valueOf(value));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Long getLong(Object value) {
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
+        }
+        try {
+            return value == null ? null : Long.parseLong(String.valueOf(value));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private double getWeight(Double value, double defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        return Math.max(0, value);
+    }
+
+    private double getMinSimilarity(RecommendConfig config) {
+        if (config == null || config.getMinSimilarity() == null) {
+            return 0.0;
+        }
+        return Math.max(0, Math.min(1, config.getMinSimilarity()));
     }
 
     private static class UserSimilarity {

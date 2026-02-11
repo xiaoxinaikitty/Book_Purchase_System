@@ -119,8 +119,21 @@
             placeholder="请选择日期"
           />
         </el-form-item>
-        <el-form-item label="封面URL" prop="coverImage">
-          <el-input v-model="form.coverImage" placeholder="https://example.com/cover.jpg" />
+        <el-form-item label="封面" prop="coverImage">
+          <div class="cover-upload">
+            <el-upload
+              class="upload-btn"
+              :show-file-list="false"
+              accept="image/*"
+              :http-request="handleCoverUpload"
+            >
+              <div v-if="form.coverImage" class="cover-preview">
+                <img :src="form.coverImage" alt="cover" />
+              </div>
+              <el-button v-else type="primary" plain>上传封面</el-button>
+            </el-upload>
+            <el-input v-model="form.coverImage" placeholder="或粘贴封面URL" />
+          </div>
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
@@ -153,6 +166,7 @@ import {
   updateBookStatus
 } from '@/api/adminBook'
 import { getAdminCategoryList } from '@/api/adminCategory'
+import { uploadCover } from '@/api/file'
 
 const list = ref([])
 const total = ref(0)
@@ -339,6 +353,24 @@ const removeBook = async (row) => {
   }
 }
 
+const handleCoverUpload = async (options) => {
+  const formData = new FormData()
+  formData.append('file', options.file)
+  try {
+    const res = await uploadCover(formData)
+    form.coverImage = res.data
+    ElMessage.success(res.message || '封面上传成功')
+    if (options.onSuccess) {
+      options.onSuccess(res.data)
+    }
+  } catch (error) {
+    if (options.onError) {
+      options.onError(error)
+    }
+    console.error('上传封面失败:', error)
+  }
+}
+
 onMounted(() => {
   loadCategories()
   loadData()
@@ -389,6 +421,31 @@ onMounted(() => {
   height: 80px;
   object-fit: cover;
   border-radius: 8px;
+}
+
+.cover-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.cover-preview {
+  width: 80px;
+  height: 110px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+}
+
+.cover-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .pager {

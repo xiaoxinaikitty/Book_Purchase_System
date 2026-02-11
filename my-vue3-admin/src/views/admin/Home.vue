@@ -56,8 +56,16 @@
           <el-icon><TrendCharts /></el-icon>
           <span v-show="!isCollapsed">数据统计</span>
         </router-link>
-        <div class="menu-item disabled">
+        <router-link
+          class="menu-item"
+          :class="{ active: isActive('/admin/recommend-config') }"
+          to="/admin/recommend-config"
+        >
           <el-icon><Setting /></el-icon>
+          <span v-show="!isCollapsed">推荐配置</span>
+        </router-link>
+        <div class="menu-item disabled">
+          <el-icon><Tools /></el-icon>
           <span v-show="!isCollapsed">系统设置</span>
         </div>
       </nav>
@@ -163,7 +171,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import {
   Monitor, HomeFilled, Reading, Folder, UserFilled, Document,
-  TrendCharts, Setting, Fold, Expand, ArrowDown, User, SwitchButton, Coin
+  TrendCharts, Setting, Tools, Fold, Expand, ArrowDown, User, SwitchButton, Coin
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store/user'
 import { getOverview } from '@/api/adminStatistics'

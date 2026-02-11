@@ -139,6 +139,12 @@ const routes = [
     component: () => import('@/views/admin/Statistics.vue'),
     meta: { title: '数据统计', requiresAuth: true, role: 1 }
   },
+  {
+    path: '/admin/recommend-config',
+    name: 'AdminRecommendConfig',
+    component: () => import('@/views/admin/RecommendConfig.vue'),
+    meta: { title: '推荐配置', requiresAuth: true, role: 1 }
+  },
   // 404 页面
   {
     path: '/:pathMatch(.*)*',

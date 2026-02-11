@@ -32,7 +32,7 @@ public class RecommendController {
         if (userId == null) {
             throw new BusinessException(401, "请先登录");
         }
-        return Result.success(recommendService.personalRecommend(userId, 5, limit));
+        return Result.success(recommendService.personalRecommend(userId, 0, limit));
     }
 
     @ApiOperation("热门推荐")
