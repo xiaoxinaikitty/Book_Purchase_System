@@ -2,6 +2,7 @@
   <div class="address-page">
     <header class="page-header">
       <div>
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>收货地址</h1>
         <p>管理收货信息</p>
       </div>
@@ -75,6 +76,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getAddressList,
@@ -84,6 +86,7 @@ import {
   setDefaultAddress
 } from '@/api/address'
 
+const router = useRouter()
 const list = ref([])
 const loading = ref(false)
 const dialogVisible = ref(false)
@@ -203,6 +206,14 @@ const removeAddress = async (row) => {
   }
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/home')
+  }
+}
+
 onMounted(loadData)
 </script>
 
@@ -230,6 +241,11 @@ onMounted(loadData)
 .page-header p {
   color: #6b7280;
   font-size: 13px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .table-card {

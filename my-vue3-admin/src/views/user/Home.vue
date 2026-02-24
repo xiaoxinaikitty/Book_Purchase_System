@@ -63,10 +63,13 @@
         <div class="banner-content">
           <h1>欢迎回来，{{ userStore.nickname || userStore.username }}！</h1>
           <p>发现好书，开启智慧阅读之旅</p>
-          <el-button type="primary" size="large" round>
-            探索推荐
-            <el-icon><ArrowRight /></el-icon>
-          </el-button>
+          <div class="banner-actions">
+            <el-button type="primary" size="large" round @click="router.push('/recommend')">
+              探索推荐
+              <el-icon><ArrowRight /></el-icon>
+            </el-button>
+            <el-button size="large" round @click="router.push('/books')">逛书城</el-button>
+          </div>
         </div>
         <div class="banner-illustration">
           <el-icon :size="200" color="rgba(255,255,255,0.2)"><Reading /></el-icon>
@@ -75,28 +78,28 @@
 
       <!-- 功能入口 -->
       <section class="quick-actions">
-        <div class="action-card">
+        <div class="action-card" @click="router.push('/books')">
           <div class="action-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
             <el-icon :size="32"><Search /></el-icon>
           </div>
           <h3>搜索图书</h3>
           <p>海量图书任你搜索</p>
         </div>
-        <div class="action-card">
+        <div class="action-card" @click="router.push('/recommend')">
           <div class="action-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
             <el-icon :size="32"><TrendCharts /></el-icon>
           </div>
           <h3>智能推荐</h3>
           <p>KNN算法精准推荐</p>
         </div>
-        <div class="action-card">
+        <div class="action-card" @click="router.push('/cart')">
           <div class="action-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
             <el-icon :size="32"><ShoppingCart /></el-icon>
           </div>
           <h3>购物车</h3>
           <p>快速便捷购书体验</p>
         </div>
-        <div class="action-card">
+        <div class="action-card" @click="router.push('/favorites')">
           <div class="action-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
             <el-icon :size="32"><Collection /></el-icon>
           </div>
@@ -105,11 +108,74 @@
         </div>
       </section>
 
-      <!-- 占位提示 -->
-      <section class="placeholder-section">
-        <el-empty description="首页内容开发中，敬请期待...">
-          <el-button type="primary" @click="router.push('/books')">浏览图书</el-button>
-        </el-empty>
+      <!-- 图书推荐展示 -->
+      <section class="book-section">
+        <div class="section-header">
+          <div>
+            <h2>热门图书</h2>
+            <p>销量热度榜</p>
+          </div>
+          <el-button text @click="router.push('/books')">查看更多</el-button>
+        </div>
+        <div class="book-grid" v-loading="loading.hot">
+          <div v-for="book in hotBooks" :key="book.id" class="book-card" @click="goDetail(book.id)">
+            <img :src="book.coverImage || defaultCover" alt="cover" />
+            <div class="book-info">
+              <div class="title">{{ book.title }}</div>
+              <div class="author">{{ book.author || '未知作者' }}</div>
+              <div class="meta">
+                <span>评分 {{ book.rating || 0 }}</span>
+                <span>¥{{ formatPrice(book.price) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="book-section">
+        <div class="section-header">
+          <div>
+            <h2>新书上架</h2>
+            <p>最新出版推荐</p>
+          </div>
+          <el-button text @click="router.push('/books')">查看更多</el-button>
+        </div>
+        <div class="book-grid" v-loading="loading.new">
+          <div v-for="book in newBooks" :key="book.id" class="book-card" @click="goDetail(book.id)">
+            <img :src="book.coverImage || defaultCover" alt="cover" />
+            <div class="book-info">
+              <div class="title">{{ book.title }}</div>
+              <div class="author">{{ book.author || '未知作者' }}</div>
+              <div class="meta">
+                <span>评分 {{ book.rating || 0 }}</span>
+                <span>¥{{ formatPrice(book.price) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="book-section">
+        <div class="section-header">
+          <div>
+            <h2>精选图书</h2>
+            <p>为你挑选的人气书单</p>
+          </div>
+          <el-button text @click="router.push('/books')">查看更多</el-button>
+        </div>
+        <div class="book-grid" v-loading="loading.feature">
+          <div v-for="book in featuredBooks" :key="book.id" class="book-card" @click="goDetail(book.id)">
+            <img :src="book.coverImage || defaultCover" alt="cover" />
+            <div class="book-info">
+              <div class="title">{{ book.title }}</div>
+              <div class="author">{{ book.author || '未知作者' }}</div>
+              <div class="meta">
+                <span>评分 {{ book.rating || 0 }}</span>
+                <span>¥{{ formatPrice(book.price) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
@@ -121,6 +187,7 @@
 </template>
 
 <script setup>
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import {
@@ -128,9 +195,66 @@ import {
   SwitchButton, Search, TrendCharts, ShoppingCart, Collection
 } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store/user'
+import { getHotBooks, getNewBooks, getBookList } from '@/api/book'
 
 const router = useRouter()
 const userStore = useUserStore()
+const defaultCover = '/vite.svg'
+
+const hotBooks = ref([])
+const newBooks = ref([])
+const featuredBooks = ref([])
+
+const loading = reactive({
+  hot: false,
+  new: false,
+  feature: false
+})
+
+const formatPrice = (price) => {
+  if (price === null || price === undefined) return '0.00'
+  return Number(price).toFixed(2)
+}
+
+const goDetail = (id) => {
+  router.push(`/book/${id}`)
+}
+
+const loadHotBooks = async () => {
+  loading.hot = true
+  try {
+    const res = await getHotBooks(8)
+    hotBooks.value = res.data || []
+  } catch (error) {
+    console.error('获取热门图书失败:', error)
+  } finally {
+    loading.hot = false
+  }
+}
+
+const loadNewBooks = async () => {
+  loading.new = true
+  try {
+    const res = await getNewBooks(8)
+    newBooks.value = res.data || []
+  } catch (error) {
+    console.error('获取新书推荐失败:', error)
+  } finally {
+    loading.new = false
+  }
+}
+
+const loadFeaturedBooks = async () => {
+  loading.feature = true
+  try {
+    const res = await getBookList({ page: 1, size: 8 })
+    featuredBooks.value = res.data.records || []
+  } catch (error) {
+    console.error('获取精选图书失败:', error)
+  } finally {
+    loading.feature = false
+  }
+}
 
 const handleCommand = async (command) => {
   switch (command) {
@@ -166,6 +290,12 @@ const handleCommand = async (command) => {
       break
   }
 }
+
+onMounted(() => {
+  loadHotBooks()
+  loadNewBooks()
+  loadFeaturedBooks()
+})
 </script>
 
 <style scoped>
@@ -290,6 +420,11 @@ const handleCommand = async (command) => {
   margin-bottom: 24px;
 }
 
+.banner-actions {
+  display: flex;
+  gap: 12px;
+}
+
 .banner-content .el-button {
   background: rgba(255, 255, 255, 0.2);
   border: 2px solid rgba(255, 255, 255, 0.4);
@@ -352,11 +487,80 @@ const handleCommand = async (command) => {
   color: #94a3b8;
 }
 
-/* 占位区域 */
-.placeholder-section {
+/* 图书展示 */
+.book-section {
   background: #fff;
   border-radius: 16px;
-  padding: 60px 24px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.06);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-header h2 {
+  font-size: 18px;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.section-header p {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.book-card {
+  background: #f9fafb;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(17, 24, 39, 0.08);
+}
+
+.book-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.book-info {
+  padding: 12px;
+}
+
+.book-info .title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.book-info .author {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.book-info .meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #374151;
 }
 
 /* 底部 */
@@ -378,6 +582,10 @@ const handleCommand = async (command) => {
   .navbar-menu {
     display: none;
   }
+
+  .book-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 640px) {
@@ -395,6 +603,15 @@ const handleCommand = async (command) => {
 
   .banner-illustration {
     display: none;
+  }
+
+  .banner-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .book-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>

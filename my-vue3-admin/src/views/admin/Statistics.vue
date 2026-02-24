@@ -2,6 +2,7 @@
   <div class="admin-statistics">
     <header class="page-header">
       <div>
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>数据统计</h1>
         <p>系统关键指标与趋势概览</p>
       </div>
@@ -140,6 +141,7 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { UserFilled, Reading, Document, Coin } from '@element-plus/icons-vue'
 import {
   getOverview,
@@ -274,6 +276,14 @@ const loadAll = () => {
   loadUserGrowth()
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/admin/home')
+  }
+}
+
 onMounted(() => {
   loadAll()
 })
@@ -305,6 +315,11 @@ onMounted(() => {
 .page-header p {
   color: #6b7280;
   font-size: 13px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .overview {
@@ -467,3 +482,4 @@ onMounted(() => {
   }
 }
 </style>
+const router = useRouter()

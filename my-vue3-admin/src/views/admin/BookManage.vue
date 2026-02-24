@@ -2,6 +2,7 @@
   <div class="admin-books">
     <header class="page-header">
       <div>
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>图书管理</h1>
         <p>维护图书信息与上下架状态</p>
       </div>
@@ -157,6 +158,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getAdminBookList,
@@ -168,6 +170,7 @@ import {
 import { getAdminCategoryList } from '@/api/adminCategory'
 import { uploadCover } from '@/api/file'
 
+const router = useRouter()
 const list = ref([])
 const total = ref(0)
 const page = ref(1)
@@ -353,6 +356,14 @@ const removeBook = async (row) => {
   }
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/admin/home')
+  }
+}
+
 const handleCoverUpload = async (options) => {
   const formData = new FormData()
   formData.append('file', options.file)
@@ -403,6 +414,11 @@ onMounted(() => {
 .page-header p {
   color: #6b7280;
   font-size: 13px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .actions {

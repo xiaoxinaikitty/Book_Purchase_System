@@ -2,6 +2,7 @@
   <div class="history-page">
     <header class="page-header">
       <div>
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>浏览记录</h1>
         <p>回顾最近浏览过的图书</p>
       </div>
@@ -159,6 +160,14 @@ const handleClear = async () => {
   }
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/home')
+  }
+}
+
 onMounted(() => {
   loadData()
 })
@@ -188,6 +197,11 @@ onMounted(() => {
 .page-header p {
   color: #6b7280;
   font-size: 13px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .header-actions {

@@ -2,6 +2,7 @@
   <div class="admin-orders">
     <header class="page-header">
       <div>
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>订单管理</h1>
         <p>管理订单状态与发货</p>
       </div>
@@ -101,6 +102,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getAdminOrderList,
@@ -109,6 +111,7 @@ import {
   deleteOrder
 } from '@/api/adminOrder'
 
+const router = useRouter()
 const list = ref([])
 const total = ref(0)
 const page = ref(1)
@@ -226,6 +229,14 @@ const removeOrder = async (row) => {
   }
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/admin/home')
+  }
+}
+
 onMounted(() => {
   loadData()
 })
@@ -257,6 +268,11 @@ onMounted(() => {
 .page-header p {
   color: #6b7280;
   font-size: 13px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .actions {

@@ -2,6 +2,7 @@
   <div class="profile-page">
     <header class="profile-header">
       <div class="header-left">
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>个人中心</h1>
         <p>管理个人资料与安全设置</p>
       </div>
@@ -266,6 +267,14 @@ const handleLogout = async () => {
   }
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/home')
+  }
+}
+
 onMounted(async () => {
   try {
     await userStore.fetchUserInfo()
@@ -300,6 +309,11 @@ onMounted(async () => {
 .header-left p {
   color: #6b7280;
   font-size: 14px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .profile-grid {

@@ -2,6 +2,7 @@
   <div class="books-page">
     <header class="hero">
       <div class="hero-content">
+        <el-button text class="back-btn" @click="goBack">← 返回首页</el-button>
         <h1>发现你喜欢的好书</h1>
         <p>从海量图书中筛选适合你的阅读清单</p>
         <div class="search-bar">
@@ -221,6 +222,14 @@ const goDetail = (id) => {
   router.push(`/book/${id}`)
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/home')
+  }
+}
+
 onMounted(() => {
   loadCategories()
   loadBooks()
@@ -240,9 +249,10 @@ onMounted(() => {
   overflow: hidden;
   background: linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #7c3aed 100%);
   color: #fff;
-  padding: 48px 32px;
+  padding: 48px 32px 72px;
   border-bottom-left-radius: 32px;
   border-bottom-right-radius: 32px;
+  z-index: 1;
 }
 
 .hero-content {
@@ -254,6 +264,15 @@ onMounted(() => {
   font-size: 34px;
   font-weight: 700;
   margin-bottom: 10px;
+}
+
+.back-btn {
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 12px;
+}
+
+.back-btn:hover {
+  color: #fff;
 }
 
 .hero p {
@@ -281,7 +300,7 @@ onMounted(() => {
 
 .highlight {
   max-width: 1200px;
-  margin: -40px auto 24px;
+  margin: 16px auto 24px;
   padding: 0 24px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);

@@ -2,6 +2,7 @@
   <div class="recommend-page">
     <header class="page-hero">
       <div class="hero-content">
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>智能推荐</h1>
         <p>基于 KNN 算法的个性化选书助手</p>
         <div class="hero-actions">
@@ -184,6 +185,14 @@ const loadAll = () => {
   loadNew()
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/home')
+  }
+}
+
 onMounted(() => {
   loadAll()
 })
@@ -217,6 +226,15 @@ onMounted(() => {
   font-size: 36px;
   font-weight: 700;
   margin-bottom: 10px;
+}
+
+.back-btn {
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 12px;
+}
+
+.back-btn:hover {
+  color: #fff;
 }
 
 .hero-content p {

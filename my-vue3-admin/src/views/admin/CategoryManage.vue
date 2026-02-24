@@ -2,6 +2,7 @@
   <div class="admin-categories">
     <header class="page-header">
       <div>
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>分类管理</h1>
         <p>维护图书分类结构</p>
       </div>
@@ -59,6 +60,7 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getAdminCategoryList,
@@ -67,6 +69,7 @@ import {
   deleteCategory
 } from '@/api/adminCategory'
 
+const router = useRouter()
 const list = ref([])
 const loading = ref(false)
 
@@ -166,6 +169,14 @@ const removeCategory = async (row) => {
   }
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/admin/home')
+  }
+}
+
 onMounted(() => {
   loadData()
 })
@@ -195,6 +206,11 @@ onMounted(() => {
 .page-header p {
   color: #6b7280;
   font-size: 13px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .table-card {

@@ -2,6 +2,7 @@
   <div class="orders-page">
     <header class="page-header">
       <div>
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>我的订单</h1>
         <p>查看订单进度与状态</p>
       </div>
@@ -205,6 +206,14 @@ const confirm = async (row) => {
   }
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/home')
+  }
+}
+
 onMounted(() => {
   loadData()
 })
@@ -234,6 +243,11 @@ onMounted(() => {
 .page-header p {
   color: #6b7280;
   font-size: 13px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .table-card {

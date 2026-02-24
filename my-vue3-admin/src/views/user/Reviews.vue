@@ -2,6 +2,7 @@
   <div class="reviews-page">
     <header class="page-header">
       <div>
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>我的评价</h1>
         <p>查看你提交过的图书评价</p>
       </div>
@@ -115,6 +116,14 @@ const removeReview = async (item) => {
   }
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/home')
+  }
+}
+
 onMounted(() => {
   loadData()
 })
@@ -144,6 +153,11 @@ onMounted(() => {
 .page-header p {
   color: #6b7280;
   font-size: 13px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .review-card {

@@ -2,6 +2,7 @@
   <div class="cart-page">
     <header class="page-header">
       <div>
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>我的购物车</h1>
         <p>管理想购买的图书清单</p>
       </div>
@@ -133,6 +134,14 @@ const goCheckout = () => {
   router.push(`/checkout?ids=${ids}`)
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/home')
+  }
+}
+
 const handleRemove = async (row) => {
   try {
     await ElMessageBox.confirm('确定删除该商品吗？', '提示', {
@@ -196,6 +205,11 @@ onMounted(() => {
 .page-header p {
   color: #6b7280;
   font-size: 13px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .table-card {

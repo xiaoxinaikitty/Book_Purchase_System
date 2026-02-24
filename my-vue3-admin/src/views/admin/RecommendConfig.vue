@@ -2,6 +2,7 @@
   <div class="recommend-config">
     <header class="page-header">
       <div>
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>推荐配置</h1>
         <p>调整 KNN 参数与行为权重</p>
       </div>
@@ -52,12 +53,14 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { getRecommendConfig, updateRecommendConfig } from '@/api/adminRecommendConfig'
 
 const loading = ref(false)
 const saving = ref(false)
 const formRef = ref(null)
+const router = useRouter()
 
 const form = reactive({
   kValue: 5,
@@ -104,6 +107,14 @@ const saveConfig = async () => {
   })
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/admin/home')
+  }
+}
+
 onMounted(() => {
   loadConfig()
 })
@@ -135,6 +146,11 @@ onMounted(() => {
 .page-header p {
   color: #6b7280;
   font-size: 13px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .config-card {

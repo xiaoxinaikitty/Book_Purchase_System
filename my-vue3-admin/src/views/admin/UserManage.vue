@@ -2,6 +2,7 @@
   <div class="admin-users">
     <header class="page-header">
       <div>
+        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
         <h1>用户管理</h1>
         <p>管理用户账户与状态</p>
       </div>
@@ -95,6 +96,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/store/user'
 import {
@@ -107,6 +109,7 @@ import {
 
 const userStore = useUserStore()
 
+const router = useRouter()
 const list = ref([])
 const total = ref(0)
 const page = ref(1)
@@ -214,6 +217,14 @@ const removeUser = async (row) => {
   }
 }
 
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/admin/home')
+  }
+}
+
 onMounted(() => {
   loadData()
 })
@@ -243,6 +254,11 @@ onMounted(() => {
 .page-header p {
   color: #6b7280;
   font-size: 13px;
+}
+
+.back-btn {
+  padding-left: 0;
+  margin-bottom: 6px;
 }
 
 .actions {
