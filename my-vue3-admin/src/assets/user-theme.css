@@ -1,0 +1,133 @@
+:root {
+  --user-bg: #f3f6fb;
+  --user-panel: #ffffff;
+  --user-border: #e6ebf3;
+  --user-text-main: #101828;
+  --user-text-secondary: #5f6b7a;
+  --user-text-light: #8a95a6;
+  --user-primary: #0f6fff;
+  --user-primary-soft: #ebf4ff;
+  --user-success: #00b578;
+  --user-radius-lg: 18px;
+  --user-radius-md: 12px;
+  --user-shadow: 0 12px 34px rgba(15, 23, 42, 0.06);
+}
+
+.user-layout,
+.user-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 0% 0%, #deecff 0, transparent 28%),
+    radial-gradient(circle at 100% 100%, #dcfff2 0, transparent 28%),
+    var(--user-bg);
+  color: var(--user-text-main);
+}
+
+.user-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-shell-content {
+  flex: 1;
+}
+
+.user-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.user-page-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--user-text-main);
+}
+
+.user-page-desc {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--user-text-secondary);
+}
+
+.user-card {
+  border: 1px solid var(--user-border);
+  border-radius: var(--user-radius-lg);
+  background: var(--user-panel);
+  box-shadow: var(--user-shadow);
+}
+
+.user-card-inner {
+  padding: 18px;
+}
+
+.user-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.user-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.user-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 1080px) {
+  .user-grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .user-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .user-grid-2,
+  .user-grid-3,
+  .user-grid-4 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .user-shell-content {
+    padding: 12px;
+  }
+}
+
+.user-layout .address-page,
+.user-shell .address-page,
+.user-layout .detail-page,
+.user-shell .detail-page,
+.user-layout .books-page,
+.user-shell .books-page,
+.user-layout .cart-page,
+.user-shell .cart-page,
+.user-layout .checkout-page,
+.user-shell .checkout-page,
+.user-layout .favorites-page,
+.user-shell .favorites-page,
+.user-layout .history-page,
+.user-shell .history-page,
+.user-layout .home-page,
+.user-shell .home-page,
+.user-layout .order-detail,
+.user-shell .order-detail,
+.user-layout .orders-page,
+.user-shell .orders-page,
+.user-layout .profile-page,
+.user-shell .profile-page,
+.user-layout .recommend-page,
+.user-shell .recommend-page,
+.user-layout .reviews-page,
+.user-shell .reviews-page {
+  min-height: auto;
+}

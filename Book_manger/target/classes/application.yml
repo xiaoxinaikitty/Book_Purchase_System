@@ -57,7 +57,7 @@ jwt:
 
 # 文件上传路径
 file:
-  upload-path: D:/Book_Purchase_System/uploads/
+  upload-path: ${UPLOAD_PATH:D:/ChxySystem/Book_Purchase_System/uploads/}
 
 # Knife4j/Swagger配置
 knife4j:

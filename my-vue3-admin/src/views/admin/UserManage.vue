@@ -1,33 +1,45 @@
 <template>
-  <div class="admin-users">
-    <header class="page-header">
-      <div>
-        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
-        <h1>用户管理</h1>
-        <p>管理用户账户与状态</p>
-      </div>
-      <div class="actions">
-        <el-input
-          v-model="keyword"
-          placeholder="搜索用户名/昵称/邮箱"
-          clearable
-          @keyup.enter="handleSearch"
-        />
-        <el-button type="primary" @click="handleSearch">搜索</el-button>
-      </div>
-    </header>
+  <section class="admin-page">
+    <PageHeader title="用户管理" description="管理用户账户状态、资料与安全操作">
+      <template #actions>
+        <div class="admin-filter-bar">
+          <el-input
+            v-model="keyword"
+            placeholder="搜索用户名/昵称/邮箱"
+            clearable
+            @keyup.enter="handleSearch"
+          />
+          <el-button type="primary" @click="handleSearch">搜索</el-button>
+        </div>
+      </template>
+    </PageHeader>
 
-    <el-card class="table-card" shadow="never">
+    <div class="admin-grid-3">
+      <div class="admin-card admin-card-inner summary-card">
+        <span class="label">当前页用户</span>
+        <strong>{{ list.length }}</strong>
+      </div>
+      <div class="admin-card admin-card-inner summary-card">
+        <span class="label">管理员数量</span>
+        <strong>{{ adminCount }}</strong>
+      </div>
+      <div class="admin-card admin-card-inner summary-card">
+        <span class="label">禁用用户</span>
+        <strong>{{ disabledCount }}</strong>
+      </div>
+    </div>
+
+    <div class="admin-card admin-card-inner">
       <el-table :data="list" v-loading="loading" stripe>
         <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="username" label="用户名" min-width="140" />
-        <el-table-column prop="nickname" label="昵称" min-width="140" />
+        <el-table-column prop="username" label="用户名" min-width="130" />
+        <el-table-column prop="nickname" label="昵称" min-width="130" />
         <el-table-column prop="email" label="邮箱" min-width="180" />
         <el-table-column prop="phone" label="手机号" min-width="140" />
         <el-table-column label="角色" width="100">
           <template #default="{ row }">
             <el-tag size="small" :type="row.role === 1 ? 'warning' : 'success'">
-              {{ row.role === 1 ? '管理员' : '普通用户' }}
+              {{ row.role === 1 ? '管理员' : '用户' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -62,7 +74,7 @@
         </el-table-column>
       </el-table>
 
-      <div class="pager">
+      <div class="admin-table-footer">
         <el-pagination
           background
           layout="total, sizes, prev, pager, next"
@@ -74,7 +86,7 @@
           @current-change="handlePageChange"
         />
       </div>
-    </el-card>
+    </div>
 
     <el-dialog v-model="detailVisible" title="用户详情" width="420px">
       <div class="detail-grid" v-if="detail">
@@ -91,12 +103,11 @@
         <el-button @click="detailVisible = false">关闭</el-button>
       </template>
     </el-dialog>
-  </div>
+  </section>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/store/user'
 import {
@@ -106,10 +117,9 @@ import {
   resetUserPassword,
   deleteUser
 } from '@/api/adminUser'
+import PageHeader from '@/components/admin/PageHeader.vue'
 
 const userStore = useUserStore()
-
-const router = useRouter()
 const list = ref([])
 const total = ref(0)
 const page = ref(1)
@@ -119,6 +129,9 @@ const loading = ref(false)
 
 const detailVisible = ref(false)
 const detail = ref(null)
+
+const adminCount = computed(() => list.value.filter((item) => item.role === 1).length)
+const disabledCount = computed(() => list.value.filter((item) => item.status !== 1).length)
 
 const loadData = async () => {
   loading.value = true
@@ -130,8 +143,6 @@ const loadData = async () => {
     })
     list.value = res.data.records || []
     total.value = res.data.total || 0
-  } catch (error) {
-    console.error('获取用户列表失败:', error)
   } finally {
     loading.value = false
   }
@@ -166,18 +177,16 @@ const openDetail = async (row) => {
 const toggleStatus = async (row) => {
   const targetStatus = row.status === 1 ? 0 : 1
   try {
-    await ElMessageBox.confirm(
-      `确定要${targetStatus === 1 ? '启用' : '禁用'}该用户吗？`,
-      '提示',
-      { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }
-    )
+    await ElMessageBox.confirm(`确定要${targetStatus === 1 ? '启用' : '禁用'}该用户吗？`, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
     const res = await updateUserStatus(row.id, targetStatus)
     ElMessage.success(res.message || '操作成功')
     loadData()
-  } catch (error) {
-    if (error !== 'cancel') {
-      console.error('更新状态失败:', error)
-    }
+  } catch {
+    // ignore cancel
   }
 }
 
@@ -193,10 +202,8 @@ const resetPassword = async (row) => {
       confirmButtonText: '知道了',
       type: 'success'
     })
-  } catch (error) {
-    if (error !== 'cancel') {
-      console.error('重置密码失败:', error)
-    }
+  } catch {
+    // ignore cancel
   }
 }
 
@@ -210,18 +217,8 @@ const removeUser = async (row) => {
     const res = await deleteUser(row.id)
     ElMessage.success(res.message || '删除成功')
     loadData()
-  } catch (error) {
-    if (error !== 'cancel') {
-      console.error('删除用户失败:', error)
-    }
-  }
-}
-
-const goBack = () => {
-  if (window.history.length > 1) {
-    router.back()
-  } else {
-    router.push('/admin/home')
+  } catch {
+    // ignore cancel
   }
 }
 
@@ -231,50 +228,20 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.admin-users {
-  min-height: 100vh;
-  background: #f5f7fb;
-  padding: 24px;
-}
-
-.page-header {
+.summary-card {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.page-header h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 6px;
-}
-
-.page-header p {
-  color: #6b7280;
+.summary-card .label {
+  color: var(--admin-text-secondary);
   font-size: 13px;
 }
 
-.back-btn {
-  padding-left: 0;
-  margin-bottom: 6px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.table-card {
-  border-radius: 14px;
-}
-
-.pager {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
+.summary-card strong {
+  font-size: 30px;
+  color: var(--admin-text-main);
 }
 
 .detail-grid {
@@ -286,17 +253,5 @@ onMounted(() => {
 
 .detail-grid span {
   color: #6b7280;
-}
-
-@media (max-width: 900px) {
-  .page-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .actions {
-    width: 100%;
-  }
 }
 </style>

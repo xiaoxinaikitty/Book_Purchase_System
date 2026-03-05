@@ -71,9 +71,7 @@
     </div>
     
     <!-- 底部版权 -->
-    <div class="copyright">
-      © 2024 购书推荐系统 · 管理后台
-    </div>
+    <div class="copyright">© {{ new Date().getFullYear() }} 购书推荐系统 · 管理后台</div>
   </div>
 </template>
 
@@ -112,7 +110,7 @@ const handleLogin = async () => {
     
     loading.value = true
     try {
-      const res = await userStore.login(loginForm)
+      await userStore.login(loginForm)
       
       // 验证是否为管理员
       if (!userStore.isAdmin) {
@@ -139,7 +137,7 @@ const handleLogin = async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #0f172a;
+  background: #0b1424;
   position: relative;
   overflow: hidden;
 }
@@ -152,8 +150,8 @@ const handleLogin = async () => {
   right: 0;
   bottom: 0;
   background-image: 
-    radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 25% 25%, rgba(22, 119, 255, 0.16) 0%, transparent 48%),
+    radial-gradient(circle at 75% 75%, rgba(0, 181, 120, 0.12) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -173,7 +171,7 @@ const handleLogin = async () => {
 /* 登录卡片 */
 .login-card {
   width: 400px;
-  background: rgba(30, 41, 59, 0.8);
+  background: rgba(18, 30, 52, 0.84);
   backdrop-filter: blur(20px);
   border-radius: 20px;
   padding: 48px 40px;
@@ -194,14 +192,14 @@ const handleLogin = async () => {
 .logo-wrapper {
   width: 72px;
   height: 72px;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #1677ff 0%, #00b578 100%);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 20px;
   color: #fff;
-  box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 10px 30px -10px rgba(22, 119, 255, 0.45);
 }
 
 .card-header h1 {
@@ -227,11 +225,11 @@ const handleLogin = async () => {
 }
 
 .login-form :deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 1px rgba(22, 119, 255, 0.5);
 }
 
 .login-form :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3), 0 0 0 1px #3b82f6;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.3), 0 0 0 1px #1677ff;
 }
 
 .login-form :deep(.el-input__inner) {
@@ -256,7 +254,7 @@ const handleLogin = async () => {
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #1677ff 0%, #00b578 100%);
   border: none;
   display: flex;
   align-items: center;
@@ -267,7 +265,7 @@ const handleLogin = async () => {
 
 .login-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 10px 30px -10px rgba(22, 119, 255, 0.5);
 }
 
 .login-btn:active {
@@ -293,7 +291,7 @@ const handleLogin = async () => {
 }
 
 .back-link:hover {
-  color: #3b82f6;
+  color: #1677ff;
 }
 
 /* 版权信息 */

@@ -1,32 +1,31 @@
 <template>
-  <div class="admin-categories">
-    <header class="page-header">
-      <div>
-        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
-        <h1>分类管理</h1>
-        <p>维护图书分类结构</p>
-      </div>
-      <el-button type="primary" @click="openAdd">新增分类</el-button>
-    </header>
+  <section class="admin-page">
+    <PageHeader title="分类管理" description="维护分类层级与展示顺序">
+      <template #actions>
+        <el-button type="primary" @click="openAdd">新增分类</el-button>
+      </template>
+    </PageHeader>
 
-    <el-card class="table-card" shadow="never">
+    <div class="admin-card admin-card-inner">
       <el-table :data="list" v-loading="loading" stripe>
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="name" label="分类名称" min-width="160" />
-        <el-table-column label="父级分类" min-width="160">
+        <el-table-column label="父级分类" min-width="140">
           <template #default="{ row }">
-            {{ parentName(row.parentId) }}
+            <el-tag size="small" effect="plain">
+              {{ parentName(row.parentId) }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="sort" label="排序" width="100" />
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="220">
           <template #default="{ row }">
             <el-button size="small" @click="openEdit(row)">编辑</el-button>
             <el-button size="small" type="danger" @click="removeCategory(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-    </el-card>
+    </div>
 
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="520px">
       <el-form ref="formRef" :model="form" :rules="rules" label-width="90px">
@@ -36,12 +35,7 @@
         <el-form-item label="父级分类" prop="parentId">
           <el-select v-model="form.parentId" placeholder="请选择父级分类">
             <el-option label="一级分类" :value="0" />
-            <el-option
-              v-for="item in list"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
+            <el-option v-for="item in list" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="排序" prop="sort">
@@ -50,26 +44,18 @@
       </el-form>
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="saving" @click="submitForm">
-          保存
-        </el-button>
+        <el-button type="primary" :loading="saving" @click="submitForm">保存</el-button>
       </template>
     </el-dialog>
-  </div>
+  </section>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import {
-  getAdminCategoryList,
-  addCategory,
-  updateCategory,
-  deleteCategory
-} from '@/api/adminCategory'
+import { getAdminCategoryList, addCategory, updateCategory, deleteCategory } from '@/api/adminCategory'
+import PageHeader from '@/components/admin/PageHeader.vue'
 
-const router = useRouter()
 const list = ref([])
 const loading = ref(false)
 
@@ -100,8 +86,6 @@ const loadData = async () => {
   try {
     const res = await getAdminCategoryList()
     list.value = res.data || []
-  } catch (error) {
-    console.error('获取分类列表失败:', error)
   } finally {
     loading.value = false
   }
@@ -122,34 +106,39 @@ const openAdd = () => {
 
 const openEdit = (row) => {
   dialogTitle.value = '编辑分类'
-  form.id = row.id
-  form.name = row.name
-  form.parentId = row.parentId || 0
-  form.sort = row.sort || 0
+  Object.assign(form, {
+    id: row.id,
+    name: row.name,
+    parentId: row.parentId || 0,
+    sort: row.sort || 0
+  })
   dialogVisible.value = true
 }
 
 const submitForm = async () => {
   if (!formRef.value) return
-  await formRef.value.validate(async (valid) => {
-    if (!valid) return
-    saving.value = true
-    try {
-      if (form.id) {
-        const res = await updateCategory(form)
-        ElMessage.success(res.message || '更新成功')
-      } else {
-        const res = await addCategory(form)
-        ElMessage.success(res.message || '添加成功')
-      }
-      dialogVisible.value = false
-      loadData()
-    } catch (error) {
-      console.error('保存分类失败:', error)
-    } finally {
-      saving.value = false
+  let valid = true
+  try {
+    await formRef.value.validate()
+  } catch {
+    valid = false
+  }
+  if (!valid) return
+
+  saving.value = true
+  try {
+    if (form.id) {
+      const res = await updateCategory(form)
+      ElMessage.success(res.message || '更新成功')
+    } else {
+      const res = await addCategory(form)
+      ElMessage.success(res.message || '添加成功')
     }
-  })
+    dialogVisible.value = false
+    loadData()
+  } finally {
+    saving.value = false
+  }
 }
 
 const removeCategory = async (row) => {
@@ -162,18 +151,8 @@ const removeCategory = async (row) => {
     const res = await deleteCategory(row.id)
     ElMessage.success(res.message || '删除成功')
     loadData()
-  } catch (error) {
-    if (error !== 'cancel') {
-      console.error('删除分类失败:', error)
-    }
-  }
-}
-
-const goBack = () => {
-  if (window.history.length > 1) {
-    router.back()
-  } else {
-    router.push('/admin/home')
+  } catch {
+    // ignore cancel
   }
 }
 
@@ -181,39 +160,3 @@ onMounted(() => {
   loadData()
 })
 </script>
-
-<style scoped>
-.admin-categories {
-  min-height: 100vh;
-  background: #f5f7fb;
-  padding: 24px;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.page-header h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 6px;
-}
-
-.page-header p {
-  color: #6b7280;
-  font-size: 13px;
-}
-
-.back-btn {
-  padding-left: 0;
-  margin-bottom: 6px;
-}
-
-.table-card {
-  border-radius: 14px;
-}
-</style>

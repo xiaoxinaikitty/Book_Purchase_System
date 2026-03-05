@@ -1,0 +1,126 @@
+:root {
+  --admin-bg: #f4f7fb;
+  --admin-panel: #ffffff;
+  --admin-panel-muted: #f7f9fc;
+  --admin-text-main: #111827;
+  --admin-text-secondary: #5b6475;
+  --admin-text-light: #8b95a7;
+  --admin-border: #e5eaf2;
+  --admin-primary: #1677ff;
+  --admin-primary-soft: #ecf4ff;
+  --admin-danger: #ef4444;
+  --admin-success: #10b981;
+  --admin-radius-lg: 16px;
+  --admin-radius-md: 12px;
+  --admin-shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
+}
+
+.admin-app {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 0% 0%, #e6f0ff 0, transparent 32%),
+    radial-gradient(circle at 100% 100%, #e8fff7 0, transparent 30%),
+    var(--admin-bg);
+  color: var(--admin-text-main);
+}
+
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.admin-page-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: var(--admin-text-main);
+}
+
+.admin-page-desc {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--admin-text-secondary);
+}
+
+.admin-card {
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-lg);
+  box-shadow: var(--admin-shadow);
+}
+
+.admin-card-inner {
+  padding: 18px 20px;
+}
+
+.admin-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-filter-bar .el-input,
+.admin-filter-bar .el-select,
+.admin-filter-bar .el-date-editor {
+  min-width: 180px;
+}
+
+.admin-table-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.admin-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.muted {
+  color: var(--admin-text-light);
+}
+
+@media (max-width: 1200px) {
+  .admin-grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 840px) {
+  .admin-grid-4,
+  .admin-grid-3,
+  .admin-grid-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-page-title {
+    font-size: 20px;
+  }
+}

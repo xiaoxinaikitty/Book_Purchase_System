@@ -1,12 +1,13 @@
 <template>
-  <div class="admin-books">
-    <header class="page-header">
-      <div>
-        <el-button text class="back-btn" @click="goBack">← 返回</el-button>
-        <h1>图书管理</h1>
-        <p>维护图书信息与上下架状态</p>
-      </div>
-      <div class="actions">
+  <section class="admin-page">
+    <PageHeader title="图书管理" description="维护图书基础信息、库存和上下架状态">
+      <template #actions>
+        <el-button type="success" @click="openAdd">新增图书</el-button>
+      </template>
+    </PageHeader>
+
+    <div class="admin-card admin-card-inner">
+      <div class="admin-filter-bar">
         <el-input
           v-model="keyword"
           placeholder="搜索书名/作者/出版社"
@@ -27,20 +28,19 @@
           <el-option label="下架" :value="0" />
         </el-select>
         <el-button type="primary" @click="handleSearch">筛选</el-button>
-        <el-button type="success" @click="openAdd">新增图书</el-button>
       </div>
-    </header>
+    </div>
 
-    <el-card class="table-card" shadow="never">
+    <div class="admin-card admin-card-inner">
       <el-table :data="list" v-loading="loading" stripe>
-        <el-table-column label="封面" width="90">
+        <el-table-column label="封面" width="94">
           <template #default="{ row }">
             <img class="cover" :src="row.coverImage || defaultCover" alt="cover" />
           </template>
         </el-table-column>
         <el-table-column prop="title" label="书名" min-width="180" />
         <el-table-column prop="author" label="作者" min-width="120" />
-        <el-table-column prop="categoryName" label="分类" min-width="120" />
+        <el-table-column prop="categoryName" label="分类" min-width="100" />
         <el-table-column label="价格" width="100">
           <template #default="{ row }">¥{{ formatPrice(row.price) }}</template>
         </el-table-column>
@@ -68,7 +68,7 @@
         </el-table-column>
       </el-table>
 
-      <div class="pager">
+      <div class="admin-table-footer">
         <el-pagination
           background
           layout="total, sizes, prev, pager, next"
@@ -80,46 +80,50 @@
           @current-change="handlePageChange"
         />
       </div>
-    </el-card>
+    </div>
 
-    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="720px">
-      <el-form ref="formRef" :model="form" :rules="rules" label-width="90px">
-        <el-form-item label="书名" prop="title">
-          <el-input v-model="form.title" placeholder="请输入书名" />
-        </el-form-item>
-        <el-form-item label="作者" prop="author">
-          <el-input v-model="form.author" placeholder="请输入作者" />
-        </el-form-item>
-        <el-form-item label="出版社" prop="publisher">
-          <el-input v-model="form.publisher" placeholder="请输入出版社" />
-        </el-form-item>
-        <el-form-item label="ISBN" prop="isbn">
-          <el-input v-model="form.isbn" placeholder="请输入ISBN" />
-        </el-form-item>
-        <el-form-item label="分类" prop="categoryId">
-          <el-select v-model="form.categoryId" placeholder="请选择分类">
-            <el-option
-              v-for="item in categories"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="760px">
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="92px">
+        <div class="form-grid">
+          <el-form-item label="书名" prop="title">
+            <el-input v-model="form.title" placeholder="请输入书名" />
+          </el-form-item>
+          <el-form-item label="作者" prop="author">
+            <el-input v-model="form.author" placeholder="请输入作者" />
+          </el-form-item>
+          <el-form-item label="出版社" prop="publisher">
+            <el-input v-model="form.publisher" placeholder="请输入出版社" />
+          </el-form-item>
+          <el-form-item label="ISBN" prop="isbn">
+            <el-input v-model="form.isbn" placeholder="请输入ISBN" />
+          </el-form-item>
+          <el-form-item label="分类" prop="categoryId">
+            <el-select v-model="form.categoryId" placeholder="请选择分类">
+              <el-option
+                v-for="item in categories"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="价格" prop="price">
+            <el-input-number v-model="form.price" :min="0" :precision="2" style="width: 100%" />
+          </el-form-item>
+          <el-form-item label="库存" prop="stock">
+            <el-input-number v-model="form.stock" :min="0" style="width: 100%" />
+          </el-form-item>
+          <el-form-item label="出版日期" prop="publishDate">
+            <el-date-picker
+              v-model="form.publishDate"
+              type="date"
+              value-format="YYYY-MM-DD"
+              placeholder="请选择日期"
+              style="width: 100%"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="价格" prop="price">
-          <el-input-number v-model="form.price" :min="0" :precision="2" />
-        </el-form-item>
-        <el-form-item label="库存" prop="stock">
-          <el-input-number v-model="form.stock" :min="0" />
-        </el-form-item>
-        <el-form-item label="出版日期" prop="publishDate">
-          <el-date-picker
-            v-model="form.publishDate"
-            type="date"
-            value-format="YYYY-MM-DD"
-            placeholder="请选择日期"
-          />
-        </el-form-item>
+          </el-form-item>
+        </div>
+
         <el-form-item label="封面" prop="coverImage">
           <div class="cover-upload">
             <el-upload
@@ -133,7 +137,7 @@
               </div>
               <el-button v-else type="primary" plain>上传封面</el-button>
             </el-upload>
-            <el-input v-model="form.coverImage" placeholder="或粘贴封面URL" />
+            <el-input v-model="form.coverImage" placeholder="或直接输入图片URL" />
           </div>
         </el-form-item>
         <el-form-item label="状态" prop="status">
@@ -148,29 +152,20 @@
       </el-form>
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="saving" @click="submitForm">
-          保存
-        </el-button>
+        <el-button type="primary" :loading="saving" @click="submitForm">保存</el-button>
       </template>
     </el-dialog>
-  </div>
+  </section>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import {
-  getAdminBookList,
-  addBook,
-  updateBook,
-  deleteBook,
-  updateBookStatus
-} from '@/api/adminBook'
+import { getAdminBookList, addBook, updateBook, deleteBook, updateBookStatus } from '@/api/adminBook'
 import { getAdminCategoryList } from '@/api/adminCategory'
 import { uploadCover } from '@/api/file'
+import PageHeader from '@/components/admin/PageHeader.vue'
 
-const router = useRouter()
 const list = ref([])
 const total = ref(0)
 const page = ref(1)
@@ -186,7 +181,6 @@ const dialogVisible = ref(false)
 const dialogTitle = ref('新增图书')
 const saving = ref(false)
 const formRef = ref(null)
-
 const defaultCover = '/vite.svg'
 
 const form = reactive({
@@ -211,18 +205,11 @@ const rules = {
   stock: [{ required: true, message: '请输入库存', trigger: 'blur' }]
 }
 
-const formatPrice = (price) => {
-  if (price === null || price === undefined) return '0.00'
-  return Number(price).toFixed(2)
-}
+const formatPrice = (price) => Number(price || 0).toFixed(2)
 
 const loadCategories = async () => {
-  try {
-    const res = await getAdminCategoryList()
-    categories.value = res.data || []
-  } catch (error) {
-    console.error('获取分类失败:', error)
-  }
+  const res = await getAdminCategoryList()
+  categories.value = res.data || []
 }
 
 const loadData = async () => {
@@ -237,8 +224,6 @@ const loadData = async () => {
     })
     list.value = res.data.records || []
     total.value = res.data.total || 0
-  } catch (error) {
-    console.error('获取图书列表失败:', error)
   } finally {
     loading.value = false
   }
@@ -283,59 +268,62 @@ const openAdd = () => {
 
 const openEdit = (row) => {
   dialogTitle.value = '编辑图书'
-  form.id = row.id
-  form.title = row.title
-  form.author = row.author
-  form.publisher = row.publisher
-  form.isbn = row.isbn
-  form.categoryId = row.categoryId
-  form.price = row.price
-  form.stock = row.stock
-  form.coverImage = row.coverImage
-  form.description = row.description
-  form.publishDate = row.publishDate
-  form.status = row.status
+  Object.assign(form, {
+    id: row.id,
+    title: row.title,
+    author: row.author,
+    publisher: row.publisher,
+    isbn: row.isbn,
+    categoryId: row.categoryId,
+    price: row.price,
+    stock: row.stock,
+    coverImage: row.coverImage,
+    description: row.description,
+    publishDate: row.publishDate,
+    status: row.status
+  })
   dialogVisible.value = true
 }
 
 const submitForm = async () => {
   if (!formRef.value) return
-  await formRef.value.validate(async (valid) => {
-    if (!valid) return
-    saving.value = true
-    try {
-      if (form.id) {
-        const res = await updateBook(form)
-        ElMessage.success(res.message || '更新成功')
-      } else {
-        const res = await addBook(form)
-        ElMessage.success(res.message || '添加成功')
-      }
-      dialogVisible.value = false
-      loadData()
-    } catch (error) {
-      console.error('保存图书失败:', error)
-    } finally {
-      saving.value = false
+  let valid = true
+  try {
+    await formRef.value.validate()
+  } catch {
+    valid = false
+  }
+  if (!valid) return
+
+  saving.value = true
+  try {
+    if (form.id) {
+      const res = await updateBook(form)
+      ElMessage.success(res.message || '更新成功')
+    } else {
+      const res = await addBook(form)
+      ElMessage.success(res.message || '添加成功')
     }
-  })
+    dialogVisible.value = false
+    loadData()
+  } finally {
+    saving.value = false
+  }
 }
 
 const toggleStatus = async (row) => {
   const targetStatus = row.status === 1 ? 0 : 1
   try {
-    await ElMessageBox.confirm(
-      `确定要${targetStatus === 1 ? '上架' : '下架'}该图书吗？`,
-      '提示',
-      { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }
-    )
+    await ElMessageBox.confirm(`确定要${targetStatus === 1 ? '上架' : '下架'}该图书吗？`, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
     const res = await updateBookStatus(row.id, targetStatus)
     ElMessage.success(res.message || '操作成功')
     loadData()
-  } catch (error) {
-    if (error !== 'cancel') {
-      console.error('更新状态失败:', error)
-    }
+  } catch {
+    // ignore cancel
   }
 }
 
@@ -349,37 +337,18 @@ const removeBook = async (row) => {
     const res = await deleteBook(row.id)
     ElMessage.success(res.message || '删除成功')
     loadData()
-  } catch (error) {
-    if (error !== 'cancel') {
-      console.error('删除图书失败:', error)
-    }
-  }
-}
-
-const goBack = () => {
-  if (window.history.length > 1) {
-    router.back()
-  } else {
-    router.push('/admin/home')
+  } catch {
+    // ignore cancel
   }
 }
 
 const handleCoverUpload = async (options) => {
   const formData = new FormData()
   formData.append('file', options.file)
-  try {
-    const res = await uploadCover(formData)
-    form.coverImage = res.data
-    ElMessage.success(res.message || '封面上传成功')
-    if (options.onSuccess) {
-      options.onSuccess(res.data)
-    }
-  } catch (error) {
-    if (options.onError) {
-      options.onError(error)
-    }
-    console.error('上传封面失败:', error)
-  }
+  const res = await uploadCover(formData)
+  form.coverImage = res.data
+  ElMessage.success(res.message || '封面上传成功')
+  options.onSuccess?.(res.data)
 }
 
 onMounted(() => {
@@ -389,73 +358,33 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.admin-books {
-  min-height: 100vh;
-  background: #f5f7fb;
-  padding: 24px;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.page-header h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 6px;
-}
-
-.page-header p {
-  color: #6b7280;
-  font-size: 13px;
-}
-
-.back-btn {
-  padding-left: 0;
-  margin-bottom: 6px;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-
-.table-card {
-  border-radius: 14px;
-}
-
 .cover {
-  width: 60px;
-  height: 80px;
+  width: 58px;
+  height: 78px;
   object-fit: cover;
   border-radius: 8px;
+  border: 1px solid #edf2f8;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 12px;
 }
 
 .cover-upload {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
-  width: 100%;
 }
 
 .cover-preview {
-  width: 80px;
-  height: 110px;
-  border-radius: 8px;
+  width: 78px;
+  height: 108px;
+  border-radius: 10px;
   overflow: hidden;
   border: 1px solid #e5e7eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f9fafb;
 }
 
 .cover-preview img {
@@ -464,15 +393,14 @@ onMounted(() => {
   object-fit: cover;
 }
 
-.pager {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 16px;
-}
+@media (max-width: 840px) {
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-@media (max-width: 900px) {
-  .actions {
-    width: 100%;
+  .cover-upload {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>

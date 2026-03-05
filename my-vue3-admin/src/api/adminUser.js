@@ -18,7 +18,7 @@ export function getUserList(params) {
  */
 export function getUserDetail(id) {
   return request({
-    url: /admin/user/,
+    url: `/admin/user/${id}`,
     method: 'get'
   })
 }
@@ -30,7 +30,7 @@ export function getUserDetail(id) {
  */
 export function updateUserStatus(id, status) {
   return request({
-    url: /admin/user/status/,
+    url: `/admin/user/status/${id}`,
     method: 'put',
     params: { status }
   })
@@ -42,7 +42,7 @@ export function updateUserStatus(id, status) {
  */
 export function resetUserPassword(id) {
   return request({
-    url: /admin/user/reset-password/,
+    url: `/admin/user/reset-password/${id}`,
     method: 'put'
   })
 }
@@ -53,7 +53,7 @@ export function resetUserPassword(id) {
  */
 export function deleteUser(id) {
   return request({
-    url: /admin/user/,
+    url: `/admin/user/${id}`,
     method: 'delete'
   })
 }
