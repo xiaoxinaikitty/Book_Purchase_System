@@ -1,8 +1,10 @@
 package com.bookmanager.interceptor;
 
+import com.bookmanager.common.Result;
 import com.bookmanager.exception.BusinessException;
 import com.bookmanager.utils.JwtUtils;
 import com.bookmanager.utils.UserContext;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -10,6 +12,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * JWT 拦截器
@@ -19,6 +22,9 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private static final String HEADER_NAME = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
@@ -33,7 +39,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         // 获取请求头中的Token
         String header = request.getHeader(HEADER_NAME);
         if (!StringUtils.hasText(header)) {
-            throw new BusinessException(401, "未登录或登录已过期，请重新登录");
+            return writeUnauthorizedResponse(response, "未登录或登录已过期，请重新登录");
         }
 
         // 解析Token
@@ -44,7 +50,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         // 验证Token
         if (!jwtUtils.validateToken(token)) {
-            throw new BusinessException(401, "登录已过期，请重新登录");
+            return writeUnauthorizedResponse(response, "登录已过期，请重新登录");
         }
 
         // 将用户信息存入上下文
@@ -57,6 +63,18 @@ public class JwtInterceptor implements HandlerInterceptor {
         UserContext.setRole(role);
 
         return true;
+    }
+
+    private boolean writeUnauthorizedResponse(HttpServletResponse response, String message) {
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        try {
+            response.getWriter().write(objectMapper.writeValueAsString(Result.error(401, message)));
+            return false;
+        } catch (IOException e) {
+            throw new BusinessException("鉴权失败，响应写出异常");
+        }
     }
 
     @Override

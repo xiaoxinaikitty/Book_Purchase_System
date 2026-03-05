@@ -29,9 +29,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**")
                 .excludePathPatterns(
                         // 认证接口
-                        "/api/auth/login",
-                        "/api/auth/register",
-                        "/api/auth/check-username",
+                        "/api/auth/**",
                         // 公开的图书接口
                         "/api/book/list",
                         "/api/book/detail/**",
