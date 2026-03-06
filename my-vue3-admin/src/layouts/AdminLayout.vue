@@ -98,6 +98,7 @@ import {
   ChatLineSquare,
   WarningFilled,
   Bell,
+  ChatDotRound,
   ArrowDown,
   Fold,
   Expand
@@ -120,6 +121,7 @@ const menuItems = [
   { path: '/admin/orders', label: '订单管理', icon: ShoppingBag },
   { path: '/admin/reviews', label: '评价管理', icon: ChatLineSquare },
   { path: '/admin/stock', label: '库存预警', icon: WarningFilled },
+  { path: '/admin/messages', label: '站内消息', icon: ChatDotRound },
   { path: '/admin/statistics', label: '数据统计', icon: TrendCharts },
   { path: '/admin/recommend-config', label: '推荐配置', icon: Setting },
   { path: '/admin/notices', label: '公告管理', icon: Bell }

@@ -90,6 +90,12 @@ const routes = [
         meta: { title: '公告中心' }
       },
       {
+        path: 'messages',
+        name: 'UserMessages',
+        component: () => import('@/views/user/Messages.vue'),
+        meta: { title: '站内消息' }
+      },
+      {
         path: 'order/:id',
         name: 'UserOrderDetail',
         component: () => import('@/views/user/OrderDetail.vue'),
@@ -166,6 +172,12 @@ const routes = [
         name: 'AdminStock',
         component: () => import('@/views/admin/StockWarning.vue'),
         meta: { title: '库存预警' }
+      },
+      {
+        path: 'messages',
+        name: 'AdminMessages',
+        component: () => import('@/views/admin/MessageManage.vue'),
+        meta: { title: '站内消息' }
       },
       {
         path: 'statistics',

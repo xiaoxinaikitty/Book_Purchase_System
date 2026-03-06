@@ -155,3 +155,19 @@ CREATE TABLE notice_read (
     KEY idx_user (user_id),
     KEY idx_notice (notice_id)
 );
+
+-- 站内消息表
+CREATE TABLE message (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    sender_id BIGINT NOT NULL,
+    receiver_id BIGINT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    status TINYINT DEFAULT 0 COMMENT '0-未读 1-已读',
+    read_time DATETIME DEFAULT NULL,
+    delete_by_sender TINYINT DEFAULT 0,
+    delete_by_receiver TINYINT DEFAULT 0,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    KEY idx_receiver_status (receiver_id, status),
+    KEY idx_sender (sender_id)
+);

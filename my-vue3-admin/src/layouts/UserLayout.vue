@@ -99,6 +99,7 @@ import {
   Star,
   Clock,
   Bell,
+  ChatDotRound,
   ShoppingCart,
   User,
   ArrowDown,
@@ -123,6 +124,7 @@ const menuItems = [
   { path: '/notices', label: '公告中心', icon: Bell },
   { path: '/favorites', label: '收藏夹', icon: Star },
   { path: '/history', label: '浏览记录', icon: Clock },
+  { path: '/messages', label: '站内消息', icon: ChatDotRound },
   { path: '/cart', label: '购物车', icon: ShoppingCart },
   { path: '/profile', label: '个人中心', icon: User }
 ]
