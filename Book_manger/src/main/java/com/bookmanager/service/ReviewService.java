@@ -23,6 +23,11 @@ public interface ReviewService extends IService<Review> {
      * 获取用户的评价列表
      */
     IPage<Review> getUserReviews(Long userId, Integer page, Integer size);
+
+    /**
+     * 管理员获取评价列表
+     */
+    IPage<Review> getAdminReviews(Integer page, Integer size, String keyword, Integer rating, Long bookId, Long userId);
     
     /**
      * 删除评价

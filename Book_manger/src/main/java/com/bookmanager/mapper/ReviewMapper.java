@@ -21,6 +21,15 @@ public interface ReviewMapper extends BaseMapper<Review> {
      * 分页查询图书评价（包含用户信息）
      */
     IPage<Review> selectReviewPage(Page<Review> page, @Param("bookId") Long bookId);
+
+    /**
+     * 管理员分页查询评价
+     */
+    IPage<Review> selectAdminReviewPage(Page<Review> page,
+                                        @Param("keyword") String keyword,
+                                        @Param("rating") Integer rating,
+                                        @Param("bookId") Long bookId,
+                                        @Param("userId") Long userId);
     
     /**
      * 获取用户评分矩阵（用于KNN推荐）

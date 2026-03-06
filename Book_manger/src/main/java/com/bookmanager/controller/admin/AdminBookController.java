@@ -45,6 +45,23 @@ public class AdminBookController {
         return Result.success(result);
     }
 
+    @ApiOperation("获取库存预警图书")
+    @GetMapping("/low-stock")
+    public Result<PageResult<Book>> getLowStockBooks(
+            @ApiParam("页码") @RequestParam(defaultValue = "1") Integer page,
+            @ApiParam("每页数量") @RequestParam(defaultValue = "10") Integer size,
+            @ApiParam("库存阈值") @RequestParam(required = false) Integer threshold) {
+        checkAdmin();
+        IPage<Book> bookPage = bookService.getLowStockPage(page, size, threshold);
+        PageResult<Book> result = PageResult.of(
+                bookPage.getTotal(),
+                bookPage.getRecords(),
+                bookPage.getCurrent(),
+                bookPage.getSize()
+        );
+        return Result.success(result);
+    }
+
     @ApiOperation("获取图书详情")
     @GetMapping("/{id}")
     public Result<Book> getBookDetail(@PathVariable Long id) {

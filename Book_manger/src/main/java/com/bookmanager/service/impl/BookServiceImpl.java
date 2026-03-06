@@ -53,6 +53,18 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
     }
 
     @Override
+    public IPage<Book> getLowStockPage(Integer page, Integer size, Integer threshold) {
+        int safeThreshold = threshold == null || threshold < 0 ? 20 : threshold;
+        Page<Book> pageParam = new Page<>(page, size);
+        return this.lambdaQuery()
+                .eq(Book::getStatus, 1)
+                .le(Book::getStock, safeThreshold)
+                .orderByAsc(Book::getStock)
+                .orderByDesc(Book::getSales)
+                .page(pageParam);
+    }
+
+    @Override
     public boolean addBook(Book book) {
         if (book.getStatus() == null) {
             book.setStatus(1);

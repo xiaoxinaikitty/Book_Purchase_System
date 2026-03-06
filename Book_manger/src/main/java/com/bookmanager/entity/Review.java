@@ -58,5 +58,11 @@ public class Review implements Serializable {
      */
     @TableField(exist = false)
     private String avatar;
+
+    /**
+     * 图书名称（非数据库字段）
+     */
+    @TableField(exist = false)
+    private String bookTitle;
 }
 

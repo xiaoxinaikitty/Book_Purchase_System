@@ -70,3 +70,15 @@ export function updateBookStatus(id, status) {
     params: { status }
   })
 }
+
+/**
+ * 获取库存预警图书
+ * @param {Object} params - { page, size, threshold }
+ */
+export function getLowStockBooks(params) {
+  return request({
+    url: '/admin/book/low-stock',
+    method: 'get',
+    params
+  })
+}

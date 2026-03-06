@@ -65,6 +65,12 @@ public class ReviewServiceImpl extends ServiceImpl<ReviewMapper, Review> impleme
     }
 
     @Override
+    public IPage<Review> getAdminReviews(Integer page, Integer size, String keyword, Integer rating, Long bookId, Long userId) {
+        Page<Review> pageParam = new Page<>(page, size);
+        return this.baseMapper.selectAdminReviewPage(pageParam, keyword, rating, bookId, userId);
+    }
+
+    @Override
     public boolean deleteReview(Long id) {
         Review review = this.getById(id);
         if (review == null) {

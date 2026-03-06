@@ -84,6 +84,12 @@ const routes = [
         meta: { title: '浏览记录' }
       },
       {
+        path: 'notices',
+        name: 'UserNotices',
+        component: () => import('@/views/user/Notices.vue'),
+        meta: { title: '公告中心' }
+      },
+      {
         path: 'order/:id',
         name: 'UserOrderDetail',
         component: () => import('@/views/user/OrderDetail.vue'),
@@ -150,6 +156,18 @@ const routes = [
         meta: { title: '订单管理' }
       },
       {
+        path: 'reviews',
+        name: 'AdminReviews',
+        component: () => import('@/views/admin/ReviewManage.vue'),
+        meta: { title: '评价管理' }
+      },
+      {
+        path: 'stock',
+        name: 'AdminStock',
+        component: () => import('@/views/admin/StockWarning.vue'),
+        meta: { title: '库存预警' }
+      },
+      {
         path: 'statistics',
         name: 'AdminStatistics',
         component: () => import('@/views/admin/Statistics.vue'),
@@ -160,6 +178,12 @@ const routes = [
         name: 'AdminRecommendConfig',
         component: () => import('@/views/admin/RecommendConfig.vue'),
         meta: { title: '推荐配置' }
+      },
+      {
+        path: 'notices',
+        name: 'AdminNotices',
+        component: () => import('@/views/admin/NoticeManage.vue'),
+        meta: { title: '公告管理' }
       }
     ]
   },

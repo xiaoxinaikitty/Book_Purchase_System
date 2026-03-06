@@ -131,3 +131,27 @@ CREATE TABLE recommend_config (
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- 公告表
+CREATE TABLE notice (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    cover_image VARCHAR(255),
+    status TINYINT DEFAULT 1 COMMENT '0-下线 1-发布',
+    priority INT DEFAULT 0,
+    publish_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 公告已读记录表
+CREATE TABLE notice_read (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    notice_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    read_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_notice_user (notice_id, user_id),
+    KEY idx_user (user_id),
+    KEY idx_notice (notice_id)
+);

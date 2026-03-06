@@ -35,6 +35,11 @@ public interface BookService extends IService<Book> {
      * 获取新书推荐
      */
     List<Book> getNewBooks(Integer limit);
+
+    /**
+     * 获取库存预警图书（分页）
+     */
+    IPage<Book> getLowStockPage(Integer page, Integer size, Integer threshold);
     
     /**
      * 添加图书

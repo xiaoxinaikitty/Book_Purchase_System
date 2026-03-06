@@ -10,5 +10,34 @@
         WHERE r.book_id = #{bookId}
         ORDER BY r.create_time DESC
     </select>
+
+    <!-- 管理员分页查询评价 -->
+    <select id="selectAdminReviewPage" resultType="com.bookmanager.entity.Review">
+        SELECT r.*,
+               u.nickname,
+               u.avatar,
+               b.title AS book_title
+        FROM review r
+        LEFT JOIN user u ON r.user_id = u.id
+        LEFT JOIN book b ON r.book_id = b.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (b.title LIKE CONCAT('%', #{keyword}, '%')
+                 OR u.username LIKE CONCAT('%', #{keyword}, '%')
+                 OR u.nickname LIKE CONCAT('%', #{keyword}, '%')
+                 OR r.content LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="rating != null">
+                AND r.rating = #{rating}
+            </if>
+            <if test="bookId != null">
+                AND r.book_id = #{bookId}
+            </if>
+            <if test="userId != null">
+                AND r.user_id = #{userId}
+            </if>
+        </where>
+        ORDER BY r.create_time DESC
+    </select>
 </mapper>
 
