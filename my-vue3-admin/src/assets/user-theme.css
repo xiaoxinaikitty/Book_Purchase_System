@@ -1,24 +1,25 @@
 :root {
-  --user-bg: #f3f6fb;
-  --user-panel: #ffffff;
-  --user-border: #e6ebf3;
-  --user-text-main: #101828;
-  --user-text-secondary: #5f6b7a;
-  --user-text-light: #8a95a6;
-  --user-primary: #0f6fff;
-  --user-primary-soft: #ebf4ff;
-  --user-success: #00b578;
+  --user-bg: #f8f3ed;
+  --user-panel: #fffdf9;
+  --user-border: #eee2d6;
+  --user-text-main: #2f241d;
+  --user-text-secondary: #6d5f56;
+  --user-text-light: #9b8c80;
+  --user-primary: #d97745;
+  --user-primary-soft: #fff1e8;
+  --user-success: #6aa184;
   --user-radius-lg: 18px;
   --user-radius-md: 12px;
-  --user-shadow: 0 12px 34px rgba(15, 23, 42, 0.06);
+  --user-shadow: 0 12px 34px rgba(120, 91, 58, 0.08);
 }
 
 .user-layout,
 .user-shell {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 0% 0%, #deecff 0, transparent 28%),
-    radial-gradient(circle at 100% 100%, #dcfff2 0, transparent 28%),
+    radial-gradient(circle at 0% 0%, #ffe8d8 0, transparent 30%),
+    radial-gradient(circle at 100% 100%, #e2f5e8 0, transparent 28%),
+    radial-gradient(circle at 85% 12%, #fff2cf 0, transparent 18%),
     var(--user-bg);
   color: var(--user-text-main);
 }
@@ -130,4 +131,316 @@
 .user-layout .reviews-page,
 .user-shell .reviews-page {
   min-height: auto;
+}
+
+/* Warm system overrides */
+.user-shell .user-sidebar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+    linear-gradient(180deg, #654a3f, #786052 48%, #6d846f 100%) !important;
+  color: #fff5eb !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 18px 0 42px rgba(104, 77, 56, 0.14) !important;
+}
+
+.user-shell .sidebar-brand {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.user-shell .brand-logo,
+.user-shell .user-avatar {
+  background: linear-gradient(135deg, #de8652, #7ea185) !important;
+  box-shadow: 0 10px 18px rgba(95, 59, 37, 0.18);
+}
+
+.user-shell .brand-text span,
+.user-shell .menu-item,
+.user-shell .user-meta span,
+.user-shell .route-meta span {
+  color: rgba(255, 245, 235, 0.78);
+}
+
+.user-shell .menu-item:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.user-shell .menu-item.active {
+  background: linear-gradient(90deg, rgba(237, 150, 87, 0.42), rgba(151, 181, 141, 0.24)) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 10px 18px rgba(80, 55, 40, 0.12) !important;
+}
+
+.user-shell .user-topbar {
+  background: rgba(255, 252, 248, 0.82) !important;
+  border-bottom: 1px solid #eadccf !important;
+}
+
+.user-shell .route-meta strong,
+.user-shell .user-meta strong,
+.user-shell .empty-state h3 {
+  color: #4a3429 !important;
+}
+
+.user-shell .empty-state {
+  border: 1px dashed #dfcbbb !important;
+  border-radius: 18px !important;
+  background: #fffdf9 !important;
+  color: #77665b !important;
+}
+
+.user-shell .home-page .hero {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 28%),
+    linear-gradient(135deg, #fff0df, #f2d5c2 52%, #dbe8d6) !important;
+  color: #5a3f31 !important;
+  border: 1px solid rgba(230, 205, 186, 0.9) !important;
+}
+
+.user-shell .home-page .badge {
+  background: rgba(255, 255, 255, 0.66) !important;
+  color: #b2673a !important;
+}
+
+.user-shell .home-page .hero-text p,
+.user-shell .home-page .kpi span {
+  color: rgba(90, 63, 49, 0.82) !important;
+}
+
+.user-shell .home-page .kpi {
+  background: rgba(255, 253, 249, 0.72) !important;
+  border: 1px solid rgba(221, 192, 170, 0.72) !important;
+}
+
+.user-shell .home-page .kpi strong {
+  color: #5a3f31 !important;
+}
+
+.user-shell .home-page .entry {
+  background: rgba(255, 253, 249, 0.94) !important;
+  border: 1px solid rgba(236, 221, 208, 0.9) !important;
+  box-shadow: 0 16px 34px rgba(124, 92, 64, 0.08) !important;
+}
+
+.user-shell .home-page .bg-blue {
+  background: linear-gradient(135deg, #df8a57, #e0a96d) !important;
+}
+
+.user-shell .home-page .bg-green {
+  background: linear-gradient(135deg, #7fa387, #a2bc8d) !important;
+}
+
+.user-shell .home-page .bg-orange {
+  background: linear-gradient(135deg, #e59457, #efb36f) !important;
+}
+
+.user-shell .home-page .bg-purple {
+  background: linear-gradient(135deg, #b184c7, #e2a4a1) !important;
+}
+
+.user-shell .address-page,
+.user-shell .cart-page,
+.user-shell .checkout-page,
+.user-shell .favorites-page,
+.user-shell .history-page,
+.user-shell .messages-page,
+.user-shell .notices-page,
+.user-shell .orders-page,
+.user-shell .profile-page,
+.user-shell .reviews-page,
+.user-shell .detail-page,
+.user-shell .order-detail {
+  background: transparent !important;
+}
+
+.user-shell .page-header,
+.user-shell .profile-header {
+  padding: 22px 24px !important;
+  border-radius: 26px !important;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.48), transparent 32%),
+    linear-gradient(135deg, #fff3e5, #f7e0cf 58%, #edf5e8) !important;
+  border: 1px solid rgba(233, 215, 201, 0.92) !important;
+  box-shadow: 0 18px 42px rgba(129, 94, 67, 0.1) !important;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.user-shell .detail-header {
+  margin-bottom: 18px !important;
+}
+
+.user-shell .page-header h1,
+.user-shell .profile-header h1,
+.user-shell .detail-page h2,
+.user-shell .order-detail h1,
+.user-shell .order-detail h2,
+.user-shell .profile-page h2 {
+  color: #4b3529 !important;
+}
+
+.user-shell .page-header p,
+.user-shell .profile-header p,
+.user-shell .detail-page p,
+.user-shell .order-detail .summary-row,
+.user-shell .order-detail .item .meta,
+.user-shell .detail-page .author,
+.user-shell .detail-page .meta,
+.user-shell .detail-page .review-content,
+.user-shell .profile-page .meta .sub,
+.user-shell .checkout-page .address-detail,
+.user-shell .checkout-page .info .meta,
+.user-shell .messages-page .detail-meta,
+.user-shell .notices-page .detail-time,
+.user-shell .notices-page .detail-body {
+  color: #816f63 !important;
+}
+
+.user-shell .back-btn,
+.user-shell .detail-header .el-button {
+  color: #a36845 !important;
+}
+
+.user-shell .table-card,
+.user-shell .list-card,
+.user-shell .review-card,
+.user-shell .checkout-page .card,
+.user-shell .profile-page .card,
+.user-shell .detail-card,
+.user-shell .desc-card,
+.user-shell .similar-section,
+.user-shell .review-form,
+.user-shell .review-list,
+.user-shell .order-detail .detail-card,
+.user-shell .order-detail .total-card {
+  background: rgba(255, 253, 249, 0.96) !important;
+  border: 1px solid rgba(236, 218, 204, 0.92) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 18px 42px rgba(126, 94, 66, 0.08) !important;
+}
+
+.user-shell .favorites-page .favorite-card,
+.user-shell .history-page .history-card,
+.user-shell .reviews-page .review-item,
+.user-shell .messages-page .compose-card,
+.user-shell .detail-page .review-item,
+.user-shell .detail-page .similar-card,
+.user-shell .checkout-page .item-row,
+.user-shell .order-detail .item {
+  background: linear-gradient(180deg, #fffdf9, #fff7f0) !important;
+  border: 1px solid #efe0d4;
+  border-radius: 20px !important;
+  box-shadow: 0 14px 28px rgba(141, 102, 72, 0.08) !important;
+}
+
+.user-shell .detail-page .cover img,
+.user-shell .favorites-page .cover img,
+.user-shell .history-page .cover img,
+.user-shell .checkout-page .item-row img,
+.user-shell .order-detail .item img,
+.user-shell .cart-page .book-info img {
+  border-radius: 14px !important;
+  background: #f0e2d6;
+}
+
+.user-shell .title,
+.user-shell .detail-page .info h1,
+.user-shell .detail-page .review-user .name,
+.user-shell .profile-page .meta .name,
+.user-shell .favorite-card .title,
+.user-shell .history-card .title,
+.user-shell .reviews-page .book-tag,
+.user-shell .messages-page .detail-content h2,
+.user-shell .notices-page .detail-content h2 {
+  color: #4b3529 !important;
+}
+
+.user-shell .book-tag,
+.user-shell .score-chip {
+  background: #fff1e5 !important;
+  color: #c9773f !important;
+}
+
+.user-shell .price,
+.user-shell .amount,
+.user-shell .summary strong,
+.user-shell .total,
+.user-shell .checkout-page .price,
+.user-shell .order-detail .price {
+  color: #dd8351 !important;
+}
+
+.user-shell .el-card,
+.user-shell .el-table,
+.user-shell .el-table__inner-wrapper,
+.user-shell .el-table tr,
+.user-shell .el-table th.el-table__cell,
+.user-shell .el-table td.el-table__cell {
+  background: transparent;
+}
+
+.user-shell .el-table {
+  --el-table-header-bg-color: #fff7f0;
+  --el-table-row-hover-bg-color: #fff3e8;
+  --el-table-border-color: #efdfd1;
+  --el-table-text-color: #6f5d52;
+  --el-table-header-text-color: #4d382d;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.user-shell .el-button--primary {
+  --el-button-bg-color: #d97b47;
+  --el-button-border-color: #d97b47;
+  --el-button-hover-bg-color: #c86e3c;
+  --el-button-hover-border-color: #c86e3c;
+  --el-button-active-bg-color: #b96336;
+  --el-button-active-border-color: #b96336;
+}
+
+.user-shell .el-button--primary.is-plain,
+.user-shell .el-button--danger.is-plain,
+.user-shell .el-button--warning.is-plain {
+  background: #fff5ee;
+  border-color: #ebd9cb;
+  color: #9f6542;
+}
+
+.user-shell .el-input__wrapper,
+.user-shell .el-textarea__inner,
+.user-shell .el-select__wrapper,
+.user-shell .el-input-number,
+.user-shell .el-radio,
+.user-shell .el-upload-dragger {
+  background: #fffdfa !important;
+  box-shadow: 0 0 0 1px #ecdccd inset !important;
+  border-radius: 14px !important;
+}
+
+.user-shell .el-input__wrapper.is-focus,
+.user-shell .el-select__wrapper.is-focused,
+.user-shell .el-textarea__inner:focus {
+  box-shadow: 0 0 0 2px rgba(217, 123, 71, 0.16), 0 0 0 1px #d97b47 inset !important;
+}
+
+.user-shell .el-tabs__item.is-active,
+.user-shell .el-tabs__item:hover,
+.user-shell .el-empty__description p,
+.user-shell .summary,
+.user-shell .review-summary,
+.user-shell .section-header p,
+.user-shell .form-title span,
+.user-shell .list-title span {
+  color: #8a776b !important;
+}
+
+.user-shell .el-tabs__active-bar,
+.user-shell .el-switch.is-checked .el-switch__core,
+.user-shell .el-pagination.is-background .el-pager li.is-active {
+  background-color: #d97b47 !important;
+}
+
+.user-shell .el-pagination.is-background .btn-next,
+.user-shell .el-pagination.is-background .btn-prev,
+.user-shell .el-pagination.is-background .el-pager li {
+  background: #fff7ef !important;
+  color: #7c6455 !important;
 }

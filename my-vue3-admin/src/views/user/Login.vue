@@ -113,10 +113,13 @@ const handleLogin = async () => {
 <style scoped>
 .auth-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f6fff, #00b578);
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 232, 201, 0.85), transparent 24%),
+    radial-gradient(circle at 85% 18%, rgba(232, 245, 233, 0.75), transparent 22%),
+    linear-gradient(135deg, #f8e0cf, #f3d9c7 48%, #d9e8dd);
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 24px;
   position: relative;
   overflow: hidden;
 }
@@ -124,68 +127,76 @@ const handleLogin = async () => {
 .auth-glow {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
   pointer-events: none;
+  filter: blur(4px);
 }
 
 .glow-a {
   width: 420px;
   height: 420px;
   top: -120px;
-  left: -100px;
+  left: -80px;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .glow-b {
   width: 320px;
   height: 320px;
-  bottom: -100px;
-  right: -80px;
+  bottom: -90px;
+  right: -60px;
+  background: rgba(255, 216, 193, 0.4);
 }
 
 .auth-shell {
-  width: min(960px, 100%);
-  min-height: 520px;
-  border-radius: 24px;
+  width: min(980px, 100%);
+  min-height: 560px;
+  border-radius: 30px;
   overflow: hidden;
-  background: #fff;
-  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.24);
+  background: rgba(255, 251, 246, 0.92);
+  border: 1px solid rgba(236, 218, 204, 0.92);
+  box-shadow: 0 32px 70px rgba(114, 84, 63, 0.18);
+  backdrop-filter: blur(18px);
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.02fr 1fr;
   z-index: 1;
 }
 
 .auth-aside {
-  background: linear-gradient(165deg, #0b4bcc, #009e68);
-  color: #fff;
-  padding: 44px 36px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 28%),
+    linear-gradient(160deg, #b96d42, #d89361 48%, #8ead86);
+  color: #fff8f2;
+  padding: 46px 38px;
   display: flex;
   flex-direction: column;
 }
 
 .aside-logo {
-  width: 62px;
-  height: 62px;
-  border-radius: 16px;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.2);
   display: grid;
   place-items: center;
+  box-shadow: 0 14px 24px rgba(92, 57, 35, 0.18);
 }
 
 .auth-aside h1 {
-  margin-top: 20px;
+  margin-top: 22px;
   font-size: 34px;
 }
 
 .auth-aside p {
   margin-top: 12px;
-  opacity: 0.95;
+  opacity: 0.94;
+  line-height: 1.8;
 }
 
 .auth-aside ul {
   list-style: none;
   margin-top: 30px;
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .auth-aside li {
@@ -193,50 +204,60 @@ const handleLogin = async () => {
   align-items: center;
   gap: 10px;
   font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .auth-main {
-  padding: 48px 44px;
+  padding: 52px 46px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: linear-gradient(180deg, rgba(255, 253, 249, 0.82), rgba(255, 247, 241, 0.92));
 }
 
 .auth-header h2 {
-  font-size: 30px;
-  color: #0f172a;
+  font-size: 32px;
+  color: #4a3429;
 }
 
 .auth-header p {
   margin-top: 8px;
-  color: #64748b;
+  color: #8d786b;
 }
 
 .auth-form {
   margin-top: 28px;
 }
 
+.auth-form :deep(.el-form-item) {
+  margin-bottom: 18px;
+}
+
 .auth-form :deep(.el-input__wrapper) {
-  border-radius: 12px;
-  min-height: 46px;
-  box-shadow: 0 0 0 1px #e5eaf2;
+  border-radius: 14px;
+  min-height: 48px;
+  background: #fffdfa;
+  box-shadow: 0 0 0 1px #ecdccd inset;
 }
 
 .auth-form :deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px #0f6fff;
+  box-shadow: 0 0 0 1px #d97b47 inset;
 }
 
 .auth-form :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 2px rgba(15, 111, 255, 0.18), 0 0 0 1px #0f6fff;
+  box-shadow: 0 0 0 2px rgba(217, 123, 71, 0.16), 0 0 0 1px #d97b47 inset;
 }
 
 .auth-btn {
   width: 100%;
-  min-height: 48px;
-  border-radius: 12px;
+  min-height: 50px;
+  border-radius: 14px;
   font-weight: 700;
-  background: linear-gradient(135deg, #0f6fff, #00b578);
+  background: linear-gradient(135deg, #d97b47, #8aa784);
   border: none;
+  box-shadow: 0 14px 28px rgba(140, 99, 70, 0.16);
 }
 
 .auth-links {
@@ -246,13 +267,13 @@ const handleLogin = async () => {
   flex-wrap: wrap;
   gap: 10px;
   font-size: 13px;
-  color: #64748b;
+  color: #8b7769;
 }
 
 .auth-links a {
-  color: #0f6fff;
+  color: #b4683d;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 @media (max-width: 900px) {
@@ -271,3 +292,4 @@ const handleLogin = async () => {
   }
 }
 </style>
+

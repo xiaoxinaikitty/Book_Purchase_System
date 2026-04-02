@@ -188,23 +188,29 @@ const handleRegister = async () => {
 <style scoped>
 .auth-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f6fff, #00b578);
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 241, 203, 0.82), transparent 24%),
+    radial-gradient(circle at 82% 24%, rgba(227, 239, 255, 0.55), transparent 20%),
+    linear-gradient(135deg, #f8ddca, #f5d8d1 46%, #dbead9);
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 24px;
   position: relative;
   overflow: hidden;
 }
 
 .reg-theme {
-  background: linear-gradient(135deg, #0168d8, #00a66c);
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 241, 203, 0.82), transparent 24%),
+    radial-gradient(circle at 82% 24%, rgba(227, 239, 255, 0.55), transparent 20%),
+    linear-gradient(135deg, #f8ddca, #f1d4cb 46%, #d7e7dc);
 }
 
 .auth-glow {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
   pointer-events: none;
+  filter: blur(4px);
 }
 
 .glow-a {
@@ -212,6 +218,7 @@ const handleRegister = async () => {
   height: 420px;
   top: -120px;
   right: -100px;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .glow-b {
@@ -219,53 +226,60 @@ const handleRegister = async () => {
   height: 320px;
   bottom: -100px;
   left: -80px;
+  background: rgba(255, 220, 206, 0.34);
 }
 
 .auth-shell {
-  width: min(980px, 100%);
-  min-height: 560px;
-  border-radius: 24px;
+  width: min(1020px, 100%);
+  min-height: 600px;
+  border-radius: 30px;
   overflow: hidden;
-  background: #fff;
-  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.24);
+  background: rgba(255, 251, 246, 0.94);
+  border: 1px solid rgba(236, 218, 204, 0.92);
+  box-shadow: 0 32px 70px rgba(114, 84, 63, 0.18);
+  backdrop-filter: blur(18px);
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.04fr 1fr;
   z-index: 1;
 }
 
 .auth-aside {
-  background: linear-gradient(165deg, #0058be, #009a64);
-  color: #fff;
-  padding: 44px 36px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.2), transparent 28%),
+    linear-gradient(165deg, #8fa784, #d48c5a 54%, #e6b481);
+  color: #fff8f2;
+  padding: 46px 38px;
   display: flex;
   flex-direction: column;
 }
 
 .aside-logo {
-  width: 62px;
-  height: 62px;
-  border-radius: 16px;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.2);
   display: grid;
   place-items: center;
+  box-shadow: 0 14px 24px rgba(92, 57, 35, 0.18);
 }
 
 .auth-aside h1 {
-  margin-top: 20px;
+  margin-top: 22px;
   font-size: 30px;
   line-height: 1.2;
 }
 
 .auth-aside p {
   margin-top: 12px;
-  opacity: 0.95;
+  opacity: 0.94;
+  line-height: 1.8;
 }
 
 .auth-aside ul {
   list-style: none;
   margin-top: 30px;
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .auth-aside li {
@@ -273,27 +287,31 @@ const handleRegister = async () => {
   align-items: center;
   gap: 10px;
   font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .auth-main {
-  padding: 34px 40px;
+  padding: 38px 42px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: linear-gradient(180deg, rgba(255, 253, 249, 0.82), rgba(255, 247, 241, 0.92));
 }
 
 .auth-header h2 {
-  font-size: 30px;
-  color: #0f172a;
+  font-size: 32px;
+  color: #4a3429;
 }
 
 .auth-header p {
   margin-top: 8px;
-  color: #64748b;
+  color: #8d786b;
 }
 
 .auth-form {
-  margin-top: 20px;
+  margin-top: 22px;
 }
 
 .auth-form :deep(.el-form-item) {
@@ -301,38 +319,40 @@ const handleRegister = async () => {
 }
 
 .auth-form :deep(.el-input__wrapper) {
-  border-radius: 12px;
-  min-height: 46px;
-  box-shadow: 0 0 0 1px #e5eaf2;
+  border-radius: 14px;
+  min-height: 48px;
+  background: #fffdfa;
+  box-shadow: 0 0 0 1px #ecdccd inset;
 }
 
 .auth-form :deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px #0f6fff;
+  box-shadow: 0 0 0 1px #d97b47 inset;
 }
 
 .auth-form :deep(.el-input__wrapper.is-focus) {
-  box-shadow: 0 0 0 2px rgba(15, 111, 255, 0.18), 0 0 0 1px #0f6fff;
+  box-shadow: 0 0 0 2px rgba(217, 123, 71, 0.16), 0 0 0 1px #d97b47 inset;
 }
 
 .auth-btn {
   width: 100%;
-  min-height: 48px;
-  border-radius: 12px;
+  min-height: 50px;
+  border-radius: 14px;
   font-weight: 700;
-  background: linear-gradient(135deg, #0f6fff, #00b578);
+  background: linear-gradient(135deg, #d97b47, #8aa784);
   border: none;
+  box-shadow: 0 14px 28px rgba(140, 99, 70, 0.16);
 }
 
 .auth-links {
   margin-top: 12px;
   font-size: 13px;
-  color: #64748b;
+  color: #8b7769;
 }
 
 .auth-links a {
-  color: #0f6fff;
+  color: #b4683d;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 @media (max-width: 900px) {
@@ -351,3 +371,4 @@ const handleRegister = async () => {
   }
 }
 </style>
+
