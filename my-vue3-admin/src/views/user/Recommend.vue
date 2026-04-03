@@ -622,7 +622,8 @@ onMounted(() => {
 .feature-spotlight img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #f5f0eb;
 }
 
 .feature-overlay {
@@ -686,8 +687,9 @@ onMounted(() => {
   width: 72px;
   height: 98px;
   border-radius: 14px;
-  object-fit: cover;
+  object-fit: contain;
   flex-shrink: 0;
+  background: #f5f0eb;
 }
 
 .compact-copy {
@@ -746,7 +748,7 @@ onMounted(() => {
   width: 100%;
   height: 220px;
   border-radius: 18px;
-  object-fit: cover;
+  object-fit: contain;
   background: #efe0d5;
 }
 
@@ -836,7 +838,7 @@ onMounted(() => {
   width: 72px;
   height: 96px;
   border-radius: 14px;
-  object-fit: cover;
+  object-fit: contain;
   background: #efe0d5;
 }
 

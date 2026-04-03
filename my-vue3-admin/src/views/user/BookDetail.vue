@@ -419,8 +419,9 @@ watch(() => route.params.id, reloadAll)
 .cover img {
   width: 100%;
   height: 360px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 16px;
+  background: #f5f0eb;
 }
 
 .info h1 {
@@ -657,7 +658,8 @@ watch(() => route.params.id, reloadAll)
 .similar-card img {
   width: 100%;
   height: 140px;
-  object-fit: cover;
+  object-fit: contain;
+  background: #f5f0eb;
 }
 
 .similar-card .info {

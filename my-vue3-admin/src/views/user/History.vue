@@ -237,9 +237,10 @@ onMounted(() => {
 .cover img {
   width: 100%;
   height: 180px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 12px;
   cursor: pointer;
+  background: #f5f0eb;
 }
 
 .info {

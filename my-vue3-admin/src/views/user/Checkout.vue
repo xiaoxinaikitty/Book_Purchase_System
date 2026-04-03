@@ -190,8 +190,9 @@ onMounted(() => {
 .item-row img {
   width: 60px;
   height: 80px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 8px;
+  background: #f5f0eb;
 }
 
 .info .title {

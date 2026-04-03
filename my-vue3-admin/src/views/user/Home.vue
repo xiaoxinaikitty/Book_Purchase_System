@@ -349,7 +349,8 @@ onMounted(() => {
 .book-card img {
   width: 100%;
   height: 176px;
-  object-fit: cover;
+  object-fit: contain;
+  background: #f5f0eb;
 }
 
 .book-info {

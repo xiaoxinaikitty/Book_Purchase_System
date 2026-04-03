@@ -164,8 +164,9 @@ watch(() => route.params.id, loadDetail)
 .item img {
   width: 64px;
   height: 90px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 10px;
+  background: #f5f0eb;
 }
 
 .item .title {

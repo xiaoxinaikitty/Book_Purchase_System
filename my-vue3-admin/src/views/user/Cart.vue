@@ -225,8 +225,9 @@ onMounted(() => {
 .book-info img {
   width: 56px;
   height: 78px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 8px;
+  background: #f5f0eb;
 }
 
 .title {

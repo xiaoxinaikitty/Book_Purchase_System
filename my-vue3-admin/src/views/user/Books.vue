@@ -676,7 +676,8 @@ onMounted(() => {
 .spotlight-book img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #f1e0d0;
 }
 
 .spotlight-overlay {
@@ -968,7 +969,7 @@ onMounted(() => {
   width: 100%;
   height: 220px;
   border-radius: 18px;
-  object-fit: cover;
+  object-fit: contain;
   background: #f2e4d8;
 }
 
